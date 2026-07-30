@@ -1,6 +1,8 @@
 import { exitIcon, pawnIcon } from '../components/icons';
 import { THEMES } from '../data/themes';
 import type { GameSettings, GameSnapshot } from '../types';
+import { escapeHtml } from '../utils/escapeHtml';
+import { soundEffects } from '../utils/sound';
 
 export interface GameViewCallbacks {
   onExitRequest: () => void;
@@ -64,13 +66,13 @@ export function renderGameView(
 
             <button type="button" class="btn btn--exit" data-action="exit">
               ${exitIcon()}
-              <span>Exit game</span>
+              <span class="btn--exit__label">Exit game</span>
             </button>
           </header>
 
           <div
             class="card-grid"
-            style="--columns: ${snapshot.columns}"
+            style="--columns: ${snapshot.columns}; --rows: ${snapshot.rows}"
             role="grid"
             aria-label="Memory-Karten"
           >
@@ -88,7 +90,7 @@ export function renderGameView(
                     <span class="memory-card__inner">
                       <span class="memory-card__face memory-card__face--back"></span>
                       <span class="memory-card__face memory-card__face--front">
-                        <span class="memory-card__motif">${card.motif}</span>
+                        <span class="memory-card__motif">${escapeHtml(card.motif)}</span>
                       </span>
                     </span>
                   </button>
@@ -131,7 +133,9 @@ export function renderGameView(
 
   root.querySelectorAll<HTMLButtonElement>('[data-card-id]').forEach((button) => {
     button.addEventListener('click', () => {
-      callbacks.onCardClick(Number(button.dataset.cardId));
+      const cardId = Number(button.dataset.cardId);
+      soundEffects.playFlip();
+      callbacks.onCardClick(cardId);
     });
   });
 

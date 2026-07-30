@@ -29,8 +29,8 @@ export const THEMES: Record<ThemeId, ThemeDefinition> = {
     shellBackground: '#2a3441',
     textOnBoard: '#f8fafc',
     motifs: [
-      '</>',
-      '{ }',
+      '⌨️',
+      '#️⃣',
       '⚙️',
       '💻',
       '📦',

@@ -7,6 +7,7 @@ import type {
   PlayerState,
 } from '../types';
 import { shuffle } from '../utils/shuffle';
+import { soundEffects } from '../utils/sound';
 
 const MATCH_DELAY_MS = 750;
 const MISMATCH_DELAY_MS = 900;
@@ -141,6 +142,12 @@ export class MemoryGame {
     }
 
     const isMatch = firstCard.pairId === secondCard.pairId;
+
+    if (isMatch) {
+      soundEffects.playMatch();
+    } else {
+      soundEffects.playMismatch();
+    }
 
     await this.wait(isMatch ? MATCH_DELAY_MS : MISMATCH_DELAY_MS);
 

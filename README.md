@@ -2,29 +2,23 @@
 
 Zweispieler-Memory-Spiel mit TypeScript, Themes und animierten Karten.
 
-## Voraussetzungen
+## Spiel starten
 
-- Node.js 18+
+### Doppelklick (einfach)
 
-## Starten
+Nach dem Build kannst du **`index.html`** direkt doppelklicken.
 
 ```bash
 npm install
+npm run build
+```
+
+Danach `index.html` öffnen.
+
+### Entwicklung mit Live-Reload
+
+```bash
 npm run dev
 ```
 
-Danach im Browser die angezeigte lokale URL öffnen (meist `http://localhost:5173`).
-
-## Build
-
-```bash
-npm run build
-npm run preview
-```
-
-## Funktionen
-
-- **Home:** Startseite mit animiertem Controller-Icon und Start-Button
-- **Settings:** Spielerfarbe (Orange/Blau), Spielfeldgröße (4×4 / 4×6 / 6×6), Themes/Layouts
-- **Game:** Punktestand, aktueller Spieler, Exit, Karten-Flip-Animation
-- **Game Over:** Endstand, Gewinner, neue Runde
+Browser öffnet automatisch die App (meist `http://localhost:5173/app.html`).

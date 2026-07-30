@@ -5,6 +5,7 @@ import {
 } from '../components/icons';
 import { GRID_LABELS, THEMES } from '../data/themes';
 import type { GameSettings, GridSize, PlayerColor, ThemeId } from '../types';
+import { escapeHtml } from '../utils/escapeHtml';
 
 export interface SettingsViewCallbacks {
   onBack: () => void;
@@ -131,7 +132,7 @@ export function renderSettingsView(
               <div class="settings-preview__stage">
                 <div class="preview-card preview-card--back"></div>
                 <div class="preview-card preview-card--front">
-                  <span>${previewMotif}</span>
+                  <span>${escapeHtml(previewMotif)}</span>
                 </div>
               </div>
               <p class="settings-preview__caption">${theme.description}</p>
