@@ -9,8 +9,8 @@ import type {
 import { shuffle } from '../utils/shuffle';
 import { soundEffects } from '../utils/sound';
 
-const MATCH_DELAY_MS = 750;
-const MISMATCH_DELAY_MS = 900;
+const MATCH_DELAY_MS = 380;
+const MISMATCH_DELAY_MS = 520;
 
 /**
  * Core Memory game engine: board creation, flips, scoring and turn order.

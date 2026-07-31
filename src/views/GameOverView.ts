@@ -16,6 +16,8 @@ export interface GameOverViewCallbacks {
   onHome: () => void;
 }
 
+const AUTO_CONTINUE_MS = 2200;
+
 /**
  * Game-over flow: final score → winner / draw announcement.
  */
@@ -25,9 +27,10 @@ export function renderGameOverView(
   snapshot: GameSnapshot,
   phase: GameOverPhase,
   callbacks: GameOverViewCallbacks,
-): void {
+): number | null {
   const theme = THEMES[settings.themeId];
   const winner = resolveWinner(snapshot.players);
+  let autoTimer: number | null = null;
 
   if (phase === 'score') {
     root.innerHTML = `
@@ -37,10 +40,10 @@ export function renderGameOverView(
         style="--board-bg: ${theme.boardBackground}; --theme-accent: ${theme.accent}; --board-text: ${theme.textOnBoard}"
       >
         <div class="content-frame">
-          <div class="gameover-panel">
-            <h1 class="gameover-title">Game over</h1>
-            <p class="gameover-subtitle">Final score</p>
-            <div class="gameover-scores" aria-label="Endstand">
+          <div class="gameover-panel gameover-anim">
+            <h1 class="gameover-title gameover-anim__item gameover-anim__item--1">Game over</h1>
+            <p class="gameover-subtitle gameover-anim__item gameover-anim__item--2">Final score</p>
+            <div class="gameover-scores gameover-anim__item gameover-anim__item--3" aria-label="Endstand">
               ${snapshot.players
                 .map(
                   (player) => `
@@ -52,18 +55,17 @@ export function renderGameOverView(
                 )
                 .join('')}
             </div>
-            <button type="button" class="btn btn--yellow" data-action="continue">
-              <span>Continue</span>
-            </button>
+            <p class="gameover-hint gameover-anim__item gameover-anim__item--4">Weiter geht's automatisch…</p>
           </div>
         </div>
       </section>
     `;
 
-    root.querySelector('[data-action="continue"]')?.addEventListener('click', () => {
+    autoTimer = window.setTimeout(() => {
       callbacks.onContinue();
-    });
-    return;
+    }, AUTO_CONTINUE_MS);
+
+    return autoTimer;
   }
 
   if (!winner) {
@@ -74,14 +76,14 @@ export function renderGameOverView(
         style="--board-bg: ${theme.boardBackground}; --theme-accent: ${theme.accent}; --board-text: ${theme.textOnBoard}"
       >
         <div class="content-frame">
-          <div class="result-panel">
-            <h1 class="result-title">It's a DRAW</h1>
-            <div class="result-icon result-icon--draw">${scalesIcon()}</div>
-            <button type="button" class="btn btn--yellow" data-action="replay">
+          <div class="result-panel result-anim">
+            <h1 class="result-title result-anim__item result-anim__item--1">It's a DRAW</h1>
+            <div class="result-icon result-icon--draw result-anim__item result-anim__item--2">${scalesIcon()}</div>
+            <button type="button" class="btn btn--yellow btn--pulse result-anim__item result-anim__item--3" data-action="replay">
               <span class="btn__icon">${playIcon()}</span>
               <span>NEW GAME</span>
             </button>
-            <button type="button" class="btn btn--text" data-action="home">Home</button>
+            <button type="button" class="btn btn--text result-anim__item result-anim__item--4" data-action="home">Home</button>
           </div>
         </div>
       </section>
@@ -99,16 +101,26 @@ export function renderGameOverView(
         }"
       >
         ${confettiStrip()}
+        <div class="confetti-burst" aria-hidden="true">
+          ${Array.from({ length: 24 }, (_, index) => {
+            const colors = ['#ef4444', '#fbbf24', '#22d3ee', '#3b82f6', '#a3e635', '#f472b6'];
+            const color = colors[index % colors.length];
+            const left = 8 + (index * 3.7) % 84;
+            const delay = (index % 8) * 0.08;
+            const duration = 1.4 + (index % 5) * 0.15;
+            return `<span class="confetti-burst__piece" style="left:${left}%;background:${color};animation-delay:${delay}s;animation-duration:${duration}s"></span>`;
+          }).join('')}
+        </div>
         <div class="content-frame">
-          <div class="result-panel">
-            <p class="result-eyebrow">The winner is</p>
-            <h1 class="result-winner">${winnerLabel}</h1>
-            <div class="result-icon">${largePawnIcon(winner.color)}</div>
-            <button type="button" class="btn btn--yellow" data-action="replay">
+          <div class="result-panel result-anim">
+            <p class="result-eyebrow result-anim__item result-anim__item--1">The winner is</p>
+            <h1 class="result-winner result-anim__item result-anim__item--2">${winnerLabel}</h1>
+            <div class="result-icon result-anim__item result-anim__item--3">${largePawnIcon(winner.color)}</div>
+            <button type="button" class="btn btn--yellow btn--pulse result-anim__item result-anim__item--4" data-action="replay">
               <span class="btn__icon">${playIcon()}</span>
               <span>PLAY AGAIN</span>
             </button>
-            <button type="button" class="btn btn--text" data-action="home">Home</button>
+            <button type="button" class="btn btn--text result-anim__item result-anim__item--5" data-action="home">Home</button>
           </div>
         </div>
       </section>
@@ -122,6 +134,8 @@ export function renderGameOverView(
   root.querySelector('[data-action="home"]')?.addEventListener('click', () => {
     callbacks.onHome();
   });
+
+  return null;
 }
 
 function resolveWinner(players: [PlayerState, PlayerState]): PlayerState | null {

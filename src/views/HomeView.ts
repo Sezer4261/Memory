@@ -18,12 +18,12 @@ export function renderHomeView(
           ${controllerIcon('controller-icon controller-icon--faint')}
         </div>
         <div class="home-content">
-          <p class="home-eyebrow">It's play time.</p>
-          <h1 class="home-title">Ready to play?</h1>
-          <div class="home-controller home-controller--animated" aria-hidden="true">
+          <p class="home-eyebrow home-anim home-anim--1">It's play time.</p>
+          <h1 class="home-title home-anim home-anim--2">Ready to play?</h1>
+          <div class="home-controller home-controller--animated home-anim home-anim--3" aria-hidden="true">
             ${controllerIcon()}
           </div>
-          <button type="button" class="btn btn--yellow" data-action="start">
+          <button type="button" class="btn btn--yellow btn--pulse home-anim home-anim--4" data-action="start">
             <span class="btn__icon">${playIcon()}</span>
             <span>Play</span>
           </button>

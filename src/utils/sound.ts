@@ -1,8 +1,40 @@
 /**
  * Lightweight UI sounds via Web Audio API (no external files).
  */
+const MUTE_STORAGE_KEY = 'memory-muted';
+
 export class SoundEffects {
   private context: AudioContext | null = null;
+  private muted = false;
+  private readonly listeners = new Set<(muted: boolean) => void>();
+
+  constructor() {
+    this.muted = window.localStorage.getItem(MUTE_STORAGE_KEY) === '1';
+  }
+
+  public isMuted(): boolean {
+    return this.muted;
+  }
+
+  public setMuted(muted: boolean): void {
+    this.muted = muted;
+    window.localStorage.setItem(MUTE_STORAGE_KEY, muted ? '1' : '0');
+    this.listeners.forEach((listener) => {
+      listener(muted);
+    });
+  }
+
+  public toggleMuted(): boolean {
+    this.setMuted(!this.muted);
+    return this.muted;
+  }
+
+  public onMuteChange(listener: (muted: boolean) => void): () => void {
+    this.listeners.add(listener);
+    return () => {
+      this.listeners.delete(listener);
+    };
+  }
 
   private getContext(): AudioContext {
     if (!this.context) {
@@ -12,7 +44,11 @@ export class SoundEffects {
     return this.context;
   }
 
-  private async ensureRunning(): Promise<AudioContext> {
+  private async ensureRunning(): Promise<AudioContext | null> {
+    if (this.muted) {
+      return null;
+    }
+
     const context = this.getContext();
 
     if (context.state === 'suspended') {
@@ -39,6 +75,10 @@ export class SoundEffects {
 
   private async playWhoosh(): Promise<void> {
     const context = await this.ensureRunning();
+    if (!context) {
+      return;
+    }
+
     const duration = 0.16;
     const now = context.currentTime;
 
@@ -68,6 +108,10 @@ export class SoundEffects {
 
   private async playBling(): Promise<void> {
     const context = await this.ensureRunning();
+    if (!context) {
+      return;
+    }
+
     const now = context.currentTime;
     const notes = [880, 1320, 1760];
 
@@ -93,6 +137,10 @@ export class SoundEffects {
 
   private async playBuzzer(): Promise<void> {
     const context = await this.ensureRunning();
+    if (!context) {
+      return;
+    }
+
     const now = context.currentTime;
     const duration = 0.38;
 
@@ -101,7 +149,6 @@ export class SoundEffects {
     const gain = context.createGain();
     const filter = context.createBiquadFilter();
 
-    // Dual saw waves ≈ TV contest “X / wrong” buzz
     oscillator.type = 'sawtooth';
     oscillator2.type = 'sawtooth';
     oscillator.frequency.setValueAtTime(140, now);

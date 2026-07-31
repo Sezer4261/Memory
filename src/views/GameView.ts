@@ -1,7 +1,7 @@
 import { exitIcon, pawnIcon } from '../components/icons';
+import { renderMotif } from '../data/motifs';
 import { THEMES } from '../data/themes';
 import type { GameSettings, GameSnapshot } from '../types';
-import { escapeHtml } from '../utils/escapeHtml';
 import { soundEffects } from '../utils/sound';
 
 export interface GameViewCallbacks {
@@ -70,33 +70,35 @@ export function renderGameView(
             </button>
           </header>
 
-          <div
-            class="card-grid"
-            style="--columns: ${snapshot.columns}; --rows: ${snapshot.rows}"
-            role="grid"
-            aria-label="Memory-Karten"
-          >
-            ${snapshot.cards
-              .map((card) => {
-                const isOpen = card.isFlipped || card.isMatched;
-                return `
-                  <button
-                    type="button"
-                    class="memory-card ${isOpen ? 'is-flipped' : ''} ${card.isMatched ? 'is-matched' : ''}"
-                    data-card-id="${card.id}"
-                    ${card.isMatched || snapshot.isLocked ? 'disabled' : ''}
-                    aria-label="Karte ${card.id + 1}"
-                  >
-                    <span class="memory-card__inner">
-                      <span class="memory-card__face memory-card__face--back"></span>
-                      <span class="memory-card__face memory-card__face--front">
-                        <span class="memory-card__motif">${escapeHtml(card.motif)}</span>
+          <div class="game-board">
+            <div
+              class="card-grid"
+              style="--columns: ${snapshot.columns}; --rows: ${snapshot.rows}"
+              role="grid"
+              aria-label="Memory-Karten"
+            >
+              ${snapshot.cards
+                .map((card) => {
+                  const isOpen = card.isFlipped || card.isMatched;
+                  return `
+                    <button
+                      type="button"
+                      class="memory-card ${isOpen ? 'is-flipped' : ''} ${card.isMatched ? 'is-matched' : ''}"
+                      data-card-id="${card.id}"
+                      ${card.isMatched || snapshot.isLocked ? 'disabled' : ''}
+                      aria-label="Karte ${card.id + 1}"
+                    >
+                      <span class="memory-card__inner">
+                        <span class="memory-card__face memory-card__face--back"></span>
+                        <span class="memory-card__face memory-card__face--front">
+                          <span class="memory-card__motif">${renderMotif(card.motif)}</span>
+                        </span>
                       </span>
-                    </span>
-                  </button>
-                `;
-              })
-              .join('')}
+                    </button>
+                  `;
+                })
+                .join('')}
+            </div>
           </div>
         </div>
       </div>

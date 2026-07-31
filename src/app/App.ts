@@ -20,6 +20,7 @@ export class App {
   private latestSnapshot: GameSnapshot | null = null;
   private showExitDialog = false;
   private gameOverPhase: GameOverPhase = 'score';
+  private gameOverTimer: number | null = null;
 
   constructor(root: HTMLElement) {
     this.root = root;
@@ -29,7 +30,15 @@ export class App {
     this.showHome();
   }
 
+  private clearGameOverTimer(): void {
+    if (this.gameOverTimer !== null) {
+      window.clearTimeout(this.gameOverTimer);
+      this.gameOverTimer = null;
+    }
+  }
+
   private showHome(): void {
+    this.clearGameOverTimer();
     this.screen = 'home';
     this.game = null;
     this.latestSnapshot = null;
@@ -42,6 +51,7 @@ export class App {
   }
 
   private showSettings(): void {
+    this.clearGameOverTimer();
     this.screen = 'settings';
     this.game = null;
     this.showExitDialog = false;
@@ -57,6 +67,7 @@ export class App {
   }
 
   private startGame(): void {
+    this.clearGameOverTimer();
     this.screen = 'game';
     this.showExitDialog = false;
     this.gameOverPhase = 'score';
@@ -103,6 +114,7 @@ export class App {
   }
 
   private showGameOver(snapshot: GameSnapshot): void {
+    this.clearGameOverTimer();
     this.screen = 'gameover';
     this.game = null;
     this.latestSnapshot = snapshot;
@@ -115,13 +127,16 @@ export class App {
       return;
     }
 
-    renderGameOverView(
+    this.clearGameOverTimer();
+
+    this.gameOverTimer = renderGameOverView(
       this.root,
       this.settings,
       this.latestSnapshot,
       this.gameOverPhase,
       {
         onContinue: () => {
+          this.clearGameOverTimer();
           this.gameOverPhase = 'result';
           this.paintGameOver();
         },
