@@ -53,7 +53,7 @@ export function renderSettingsView(
                     const selected = draft.themeId === entry.id;
                     return `
                       <label
-                        class="radio-option radio-option--theme ${selected ? 'is-selected' : ''}"
+                        class="radio-option ${selected ? 'is-selected' : ''}"
                         data-theme-option="${entry.id}"
                       >
                         <input
@@ -90,8 +90,8 @@ export function renderSettingsView(
                         ${selected ? 'checked' : ''}
                       />
                       <span class="radio-option__control" aria-hidden="true"></span>
-                      ${pawnIcon(color, 22)}
-                      <span>${label}</span>
+                      <span class="radio-option__label">${label}</span>
+                      <span class="radio-option__marker" aria-hidden="true"></span>
                     </label>
                   `;
                 }).join('')}
@@ -115,7 +115,8 @@ export function renderSettingsView(
                         ${selected ? 'checked' : ''}
                       />
                       <span class="radio-option__control" aria-hidden="true"></span>
-                      <span>${GRID_LABELS[size]}</span>
+                      <span class="radio-option__label">${GRID_LABELS[size]}</span>
+                      <span class="radio-option__marker" aria-hidden="true"></span>
                     </label>
                   `;
                 }).join('')}
@@ -192,9 +193,30 @@ export function renderSettingsView(
         input.checked = Boolean(selected);
       }
     });
+    syncMarkers(group);
   };
 
-  const applyThemePreview = (themeId: ThemeId): void => {
+  const syncMarkers = (group?: string): void => {
+    const groups = group
+      ? [root.querySelector<HTMLElement>(`[data-group="${group}"]`)]
+      : Array.from(root.querySelectorAll<HTMLElement>('.radio-list'));
+
+    groups.forEach((list) => {
+      if (!list) {
+        return;
+      }
+
+      const hovered = list.querySelector<HTMLElement>('.radio-option.is-hovered, .radio-option:hover');
+      list.querySelectorAll<HTMLElement>('.radio-option').forEach((option) => {
+        const show = hovered
+          ? option === hovered || option.classList.contains('is-hovered')
+          : option.classList.contains('is-selected');
+        option.classList.toggle('show-marker', show);
+      });
+    });
+  };
+
+  const applyThemePreview = (themeId: ThemeId, options: { hover?: boolean } = {}): void => {
     const activeTheme = THEMES[themeId];
 
     if (screen) {
@@ -219,8 +241,11 @@ export function renderSettingsView(
     }
 
     root.querySelectorAll<HTMLElement>('[data-theme-option]').forEach((option) => {
-      option.classList.toggle('is-hovered', option.dataset.themeOption === themeId);
+      const isHoverTarget = Boolean(options.hover) && option.dataset.themeOption === themeId;
+      option.classList.toggle('is-hovered', isHoverTarget);
     });
+
+    syncMarkers('theme');
   };
 
   const syncSummary = (): void => {
@@ -245,6 +270,7 @@ export function renderSettingsView(
 
   applyThemePreview(draft.themeId);
   syncSummary();
+  syncMarkers();
 
   root.querySelector('[data-action="back"]')?.addEventListener('click', () => {
     callbacks.onBack();
@@ -283,12 +309,30 @@ export function renderSettingsView(
     option.addEventListener('mouseenter', () => {
       const themeId = option.dataset.themeOption as ThemeId | undefined;
       if (themeId) {
-        applyThemePreview(themeId);
+        applyThemePreview(themeId, { hover: true });
       }
     });
   });
 
   themeList?.addEventListener('mouseleave', () => {
     applyThemePreview(draft.themeId);
+  });
+
+  root.querySelectorAll<HTMLElement>('[data-group="player"] .radio-option, [data-group="grid"] .radio-option').forEach((option) => {
+    option.addEventListener('mouseenter', () => {
+      const list = option.closest('.radio-list');
+      list?.querySelectorAll('.radio-option').forEach((entry) => {
+        entry.classList.toggle('is-hovered', entry === option);
+      });
+      syncMarkers(list?.getAttribute('data-group') ?? undefined);
+    });
+
+    option.addEventListener('mouseleave', () => {
+      const list = option.closest('.radio-list');
+      list?.querySelectorAll('.radio-option').forEach((entry) => {
+        entry.classList.remove('is-hovered');
+      });
+      syncMarkers(list?.getAttribute('data-group') ?? undefined);
+    });
   });
 }

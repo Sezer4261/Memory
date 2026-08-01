@@ -1,4 +1,8 @@
-import { controllerIcon, playIcon } from '../components/icons';
+import {
+  arrowRightIcon,
+  controllerLineIcon,
+  watermarkControllerIcon,
+} from '../components/icons';
 
 export interface HomeViewCallbacks {
   onStart: () => void;
@@ -13,21 +17,19 @@ export function renderHomeView(
 ): void {
   root.innerHTML = `
     <section class="screen screen--home" aria-label="Startseite">
-      <div class="home-stage">
-        <div class="home-controller home-controller--watermark" aria-hidden="true">
-          ${controllerIcon('controller-icon controller-icon--faint')}
-        </div>
-        <div class="home-content">
+      <div class="home-watermark" aria-hidden="true">
+        ${watermarkControllerIcon()}
+      </div>
+      <div class="home-content">
+        <div class="home-copy">
           <p class="home-eyebrow home-anim home-anim--1">It's play time.</p>
           <h1 class="home-title home-anim home-anim--2">Ready to play?</h1>
-          <div class="home-controller home-controller--animated home-anim home-anim--3" aria-hidden="true">
-            ${controllerIcon()}
-          </div>
-          <button type="button" class="btn btn--yellow btn--pulse home-anim home-anim--4" data-action="start">
-            <span class="btn__icon">${playIcon()}</span>
-            <span>Play</span>
-          </button>
         </div>
+        <button type="button" class="btn btn--play home-anim home-anim--3" data-action="start">
+          <span class="btn__icon" aria-hidden="true">${controllerLineIcon()}</span>
+          <span class="btn__label">Play</span>
+          <span class="btn__icon btn__icon--arrow" aria-hidden="true">${arrowRightIcon()}</span>
+        </button>
       </div>
     </section>
   `;
