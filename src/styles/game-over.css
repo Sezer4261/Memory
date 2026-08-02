@@ -1,0 +1,216 @@
+/* ---------- Game over / result ---------- */
+
+.screen--gameover {
+  background: var(--board-bg, #1f2933);
+  color: var(--board-text, #f8fafc);
+  position: relative;
+  overflow: hidden;
+  animation: screen-fade-in 0.35s ease both;
+}
+
+.gameover-panel,
+.result-panel {
+  width: min(100%, 480px);
+  margin-inline: auto;
+  text-align: center;
+  display: grid;
+  justify-items: center;
+  gap: clamp(0.55rem, 2vw, 0.85rem);
+  padding-inline: 0.25rem;
+}
+
+.gameover-title,
+.result-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 7vw, 3rem);
+  letter-spacing: 0.04em;
+  color: var(--theme-accent, #2dd4bf);
+}
+
+.gameover-subtitle,
+.result-eyebrow {
+  margin: 0;
+  opacity: 0.8;
+  font-size: clamp(0.95rem, 3vw, 1.1rem);
+}
+
+.gameover-hint {
+  margin: 0.25rem 0 0;
+  opacity: 0.55;
+  font-size: 0.95rem;
+}
+
+.gameover-scores {
+  display: flex;
+  justify-content: center;
+  gap: clamp(0.55rem, 2vw, 1rem);
+  margin: 0.5rem 0 0.75rem;
+  flex-wrap: wrap;
+}
+
+.gameover-score {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-width: min(110px, 40vw);
+  justify-content: center;
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  animation: score-pop 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.gameover-score--blue {
+  background: rgba(79, 195, 247, 0.2);
+  animation-delay: 0.12s;
+}
+
+.gameover-score--orange {
+  background: rgba(255, 152, 0, 0.2);
+  animation-delay: 0.22s;
+}
+
+.gameover-score__value {
+  font-size: clamp(1.4rem, 5vw, 1.8rem);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.result-winner {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 6vw, 2.6rem);
+  color: var(--winner-color, #ff9800);
+  letter-spacing: 0.05em;
+  line-height: 1.2;
+  word-break: break-word;
+}
+
+.result-icon {
+  width: min(42vw, 180px);
+  margin: 0.5rem 0 0.75rem;
+  color: var(--theme-accent, #2dd4bf);
+}
+
+.result-icon .winner-pawn,
+.result-icon .draw-scales {
+  width: 100%;
+  height: auto;
+}
+
+.result-anim .result-icon {
+  animation: winner-bounce 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.25s both;
+}
+
+.gameover-anim__item,
+.result-anim__item {
+  opacity: 0;
+  animation: home-rise 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.gameover-anim__item--1,
+.result-anim__item--1 { animation-delay: 0.05s; }
+.gameover-anim__item--2,
+.result-anim__item--2 { animation-delay: 0.16s; }
+.gameover-anim__item--3,
+.result-anim__item--3 { animation-delay: 0.28s; }
+.gameover-anim__item--4,
+.result-anim__item--4 { animation-delay: 0.4s; }
+.result-anim__item--5 { animation-delay: 0.5s; }
+
+.confetti-strip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 48px;
+  overflow: hidden;
+  pointer-events: none;
+  animation: confetti-wave 1.2s ease-out both;
+}
+
+.confetti-piece {
+  position: absolute;
+  width: 10px;
+  height: 18px;
+  border-radius: 2px;
+  opacity: 0.9;
+}
+
+.confetti-burst {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.confetti-burst__piece {
+  position: absolute;
+  top: -12px;
+  width: 10px;
+  height: 16px;
+  border-radius: 2px;
+  animation-name: confetti-fall;
+  animation-timing-function: ease-in;
+  animation-fill-mode: both;
+}
+
+@keyframes score-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.7) translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes winner-bounce {
+  0% {
+    opacity: 0;
+    transform: scale(0.4) translateY(24px);
+  }
+
+  60% {
+    opacity: 1;
+    transform: scale(1.08) translateY(-6px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes confetti-fall {
+  0% {
+    opacity: 0;
+    transform: translateY(0) rotate(0deg);
+  }
+
+  15% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0.15;
+    transform: translateY(110vh) rotate(540deg);
+  }
+}
+
+@keyframes confetti-wave {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+

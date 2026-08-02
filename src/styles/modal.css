@@ -1,0 +1,78 @@
+/* ---------- Exit modal ---------- */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(20, 24, 30, 0.58);
+  z-index: 20;
+  padding: max(1rem, var(--safe-top)) max(1rem, var(--safe-right)) max(1rem, var(--safe-bottom)) max(1rem, var(--safe-left));
+}
+
+.confirm-modal {
+  --confirm-accent: #c4783f;
+  width: min(100%, 380px);
+  background: #f7f7f5;
+  color: var(--confirm-accent);
+  border-radius: 28px;
+  padding: clamp(1.35rem, 3.5vw, 1.75rem) clamp(1.15rem, 3vw, 1.5rem) clamp(1.15rem, 3vw, 1.4rem);
+  box-shadow: 0 22px 48px rgba(0, 0, 0, 0.32);
+  text-align: center;
+}
+
+.confirm-modal h2 {
+  margin: 0 0 1.35rem;
+  font-family: var(--font-ui);
+  font-size: clamp(1.05rem, 3.4vw, 1.2rem);
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--confirm-accent);
+}
+
+.confirm-modal__actions {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 0.7rem;
+  flex-wrap: nowrap;
+}
+
+.confirm-modal__actions .btn {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 2.65rem;
+  padding: 0.55rem 0.7rem;
+  border-radius: 999px;
+  font-size: clamp(0.68rem, 2.2vw, 0.78rem);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  box-shadow: none;
+}
+
+.btn--confirm-fill {
+  background: var(--confirm-accent, #c4783f);
+  color: #fff;
+  border: 1.5px solid var(--confirm-accent, #c4783f);
+}
+
+.btn--confirm-fill:hover {
+  background: #b36933;
+  border-color: #b36933;
+  color: #fff;
+}
+
+.btn--confirm-outline {
+  background: transparent;
+  color: var(--confirm-accent, #c4783f);
+  border: 1.5px solid var(--confirm-accent, #c4783f);
+}
+
+.btn--confirm-outline:hover {
+  background: rgba(196, 120, 63, 0.1);
+  color: var(--confirm-accent, #c4783f);
+}
+
+

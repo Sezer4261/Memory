@@ -1,6 +1,6 @@
 import { App } from './app/App';
 import { mountMuteToggle } from './components/MuteToggle';
-import './style.css';
+import './styles/index.css';
 
 const appRoot = document.querySelector<HTMLElement>('#app');
 

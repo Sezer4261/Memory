@@ -1,6 +1,5 @@
 import {
   exitIcon,
-  pawnIcon,
   playIcon,
   settingsSectionIcon,
 } from '../components/icons';
@@ -15,28 +14,43 @@ export interface SettingsViewCallbacks {
 
 const GRID_OPTIONS: GridSize[] = ['4x4', '4x6', '6x6'];
 const PLAYER_OPTIONS: PlayerColor[] = ['blue', 'orange'];
+const PREVIEW_FALLBACK_THEME: ThemeId = 'code';
+
+type DraftSelection = {
+  themeId: ThemeId | null;
+  playerColor: PlayerColor | null;
+  gridSize: GridSize | null;
+};
 
 /**
  * Settings modal: themes → player → board, with live hover preview.
  */
 export function renderSettingsView(
   root: HTMLElement,
-  initialSettings: GameSettings,
+  _initialSettings: GameSettings,
   callbacks: SettingsViewCallbacks,
 ): void {
-  let draft: GameSettings = { ...initialSettings };
+  // Match screenshot: theme preselected, player & board empty until chosen.
+  let draft: DraftSelection = {
+    themeId: 'code',
+    playerColor: null,
+    gridSize: null,
+  };
 
-  const initialTheme = THEMES[draft.themeId];
+  const previewTheme = THEMES[draft.themeId ?? PREVIEW_FALLBACK_THEME];
 
   root.innerHTML = `
     <section
       class="screen screen--settings"
       aria-label="Spieleinstellungen"
-      style="--preview-back: ${initialTheme.cardBackGradient}; --preview-board: ${initialTheme.boardBackground}; --preview-header: ${initialTheme.headerBackground}; --preview-text: ${initialTheme.textOnBoard}"
+      style="--preview-back: ${previewTheme.cardBackGradient}; --preview-board: ${previewTheme.boardBackground}; --preview-header: ${previewTheme.headerBackground}; --preview-text: ${previewTheme.textOnBoard}"
     >
       <div class="settings-modal settings-modal--enter" role="dialog" aria-modal="true" aria-labelledby="settings-title">
         <header class="settings-modal__header settings-anim settings-anim--1">
-          <h1 id="settings-title" class="settings-title">Settings</h1>
+          <div class="settings-title-wrap">
+            <h1 id="settings-title" class="settings-title">Settings</h1>
+            <span class="settings-title__rule" aria-hidden="true"></span>
+          </div>
           <button type="button" class="btn btn--text" data-action="back">Startseite</button>
         </header>
 
@@ -53,7 +67,7 @@ export function renderSettingsView(
                     const selected = draft.themeId === entry.id;
                     return `
                       <label
-                        class="radio-option ${selected ? 'is-selected' : ''}"
+                        class="radio-option ${selected ? 'is-selected show-marker' : ''}"
                         data-theme-option="${entry.id}"
                       >
                         <input
@@ -79,15 +93,13 @@ export function renderSettingsView(
               </legend>
               <div class="radio-list" role="radiogroup" aria-label="Spielerfarbe" data-group="player">
                 ${PLAYER_OPTIONS.map((color) => {
-                  const selected = draft.playerColor === color;
                   const label = color === 'blue' ? 'Blue' : 'Orange';
                   return `
-                    <label class="radio-option ${selected ? 'is-selected' : ''}">
+                    <label class="radio-option">
                       <input
                         type="radio"
                         name="player-color"
                         value="${color}"
-                        ${selected ? 'checked' : ''}
                       />
                       <span class="radio-option__control" aria-hidden="true"></span>
                       <span class="radio-option__label">${label}</span>
@@ -105,14 +117,12 @@ export function renderSettingsView(
               </legend>
               <div class="radio-list" role="radiogroup" aria-label="Spielfeldgröße" data-group="grid">
                 ${GRID_OPTIONS.map((size) => {
-                  const selected = draft.gridSize === size;
                   return `
-                    <label class="radio-option ${selected ? 'is-selected' : ''}">
+                    <label class="radio-option">
                       <input
                         type="radio"
                         name="grid-size"
                         value="${size}"
-                        ${selected ? 'checked' : ''}
                       />
                       <span class="radio-option__control" aria-hidden="true"></span>
                       <span class="radio-option__label">${GRID_LABELS[size]}</span>
@@ -128,16 +138,12 @@ export function renderSettingsView(
             <div class="settings-preview__stage" data-preview-stage>
               <div class="preview-game-header">
                 <div class="preview-scoreboard">
-                  ${pawnIcon('orange', 18)}
-                  <span>6</span>
-                  ${pawnIcon('blue', 18)}
-                  <span>2</span>
+                  <span class="preview-score preview-score--blue">Blue 0</span>
+                  <span class="preview-score preview-score--orange">Orange 0</span>
                 </div>
                 <div class="preview-current">
                   <span>Current player:</span>
-                  <span class="preview-current__badge" data-preview-current>
-                    ${pawnIcon(draft.playerColor, 16)}
-                  </span>
+                  <span class="preview-current__swatch preview-current__swatch--blue" data-preview-current></span>
                 </div>
                 <span class="preview-exit">
                   ${exitIcon()}
@@ -146,30 +152,35 @@ export function renderSettingsView(
               </div>
               <div class="preview-cards">
                 <div class="preview-card preview-card--back">
-                  <span data-preview-back-motif>${renderMotif(initialTheme.motifs[1] ?? 'git')}</span>
+                  <span data-preview-back-motif>${renderMotif(previewTheme.motifs[1] ?? 'typescript')}</span>
                 </div>
                 <div class="preview-card preview-card--front">
-                  <span data-preview-motif>${renderMotif(initialTheme.motifs[0] ?? 'typescript')}</span>
+                  <span data-preview-motif>${renderMotif(previewTheme.motifs[0] ?? 'git')}</span>
                 </div>
               </div>
             </div>
-            <p class="settings-preview__caption" data-preview-caption>${initialTheme.description}</p>
-            <nav class="settings-summary" aria-label="Auswahl">
-              <span data-summary-theme>${initialTheme.shortLabel}</span>
-              <span class="settings-summary__slash" aria-hidden="true"></span>
-              <span data-summary-player>${draft.playerColor === 'blue' ? 'Blue' : 'Orange'}</span>
-              <span class="settings-summary__slash" aria-hidden="true"></span>
-              <span data-summary-board>${GRID_LABELS[draft.gridSize]}</span>
-            </nav>
+
+            <div class="settings-action-bar settings-anim settings-anim--5">
+              <nav class="settings-summary" aria-label="Auswahl">
+                <span>Game theme</span>
+                <span class="settings-summary__slash" aria-hidden="true"></span>
+                <span>Player</span>
+                <span class="settings-summary__slash" aria-hidden="true"></span>
+                <span>Board size</span>
+              </nav>
+              <button
+                type="button"
+                class="btn btn--yellow btn--start"
+                data-action="play"
+                disabled
+                aria-disabled="true"
+              >
+                <span class="btn__icon btn__icon--boxed">${playIcon()}</span>
+                <span>Start</span>
+              </button>
+            </div>
           </aside>
         </div>
-
-        <footer class="settings-modal__footer settings-anim settings-anim--5">
-          <button type="button" class="btn btn--yellow btn--pulse" data-action="play">
-            <span class="btn__icon btn__icon--boxed">${playIcon()}</span>
-            <span>Start</span>
-          </button>
-        </footer>
       </div>
     </section>
   `;
@@ -177,12 +188,23 @@ export function renderSettingsView(
   const screen = root.querySelector<HTMLElement>('.screen--settings');
   const previewMotif = root.querySelector<HTMLElement>('[data-preview-motif]');
   const previewBackMotif = root.querySelector<HTMLElement>('[data-preview-back-motif]');
-  const previewCaption = root.querySelector<HTMLElement>('[data-preview-caption]');
   const previewCurrent = root.querySelector<HTMLElement>('[data-preview-current]');
-  const summaryTheme = root.querySelector<HTMLElement>('[data-summary-theme]');
-  const summaryPlayer = root.querySelector<HTMLElement>('[data-summary-player]');
-  const summaryBoard = root.querySelector<HTMLElement>('[data-summary-board]');
+  const playButton = root.querySelector<HTMLButtonElement>('[data-action="play"]');
   const themeList = root.querySelector<HTMLElement>('[data-group="theme"]');
+
+  const isReady = (): boolean =>
+    draft.themeId !== null && draft.playerColor !== null && draft.gridSize !== null;
+
+  const syncStartButton = (): void => {
+    if (!playButton) {
+      return;
+    }
+
+    const ready = isReady();
+    playButton.disabled = !ready;
+    playButton.setAttribute('aria-disabled', ready ? 'false' : 'true');
+    playButton.classList.toggle('is-ready', ready);
+  };
 
   const syncSelection = (group: string, value: string): void => {
     root.querySelectorAll<HTMLLabelElement>(`[data-group="${group}"] .radio-option`).forEach((option) => {
@@ -216,6 +238,16 @@ export function renderSettingsView(
     });
   };
 
+  const syncCurrentPlayerSwatch = (): void => {
+    if (!previewCurrent) {
+      return;
+    }
+
+    const color = draft.playerColor ?? 'blue';
+    previewCurrent.classList.toggle('preview-current__swatch--blue', color === 'blue');
+    previewCurrent.classList.toggle('preview-current__swatch--orange', color === 'orange');
+  };
+
   const applyThemePreview = (themeId: ThemeId, options: { hover?: boolean } = {}): void => {
     const activeTheme = THEMES[themeId];
 
@@ -226,18 +258,14 @@ export function renderSettingsView(
       screen.style.setProperty('--preview-text', activeTheme.textOnBoard);
     }
 
-    if (previewMotif) {
-      previewMotif.innerHTML = renderMotif(activeTheme.motifs[0] ?? '🎮');
-    }
-
     if (previewBackMotif) {
       previewBackMotif.innerHTML = renderMotif(
-        activeTheme.motifs[1] ?? activeTheme.motifs[0] ?? '💻',
+        activeTheme.motifs[1] ?? activeTheme.motifs[0] ?? 'typescript',
       );
     }
 
-    if (previewCaption) {
-      previewCaption.textContent = activeTheme.description;
+    if (previewMotif) {
+      previewMotif.innerHTML = renderMotif(activeTheme.motifs[0] ?? 'git');
     }
 
     root.querySelectorAll<HTMLElement>('[data-theme-option]').forEach((option) => {
@@ -248,60 +276,53 @@ export function renderSettingsView(
     syncMarkers('theme');
   };
 
-  const syncSummary = (): void => {
-    const activeTheme = THEMES[draft.themeId];
-
-    if (summaryTheme) {
-      summaryTheme.textContent = activeTheme.shortLabel;
-    }
-
-    if (summaryPlayer) {
-      summaryPlayer.textContent = draft.playerColor === 'blue' ? 'Blue' : 'Orange';
-    }
-
-    if (summaryBoard) {
-      summaryBoard.textContent = GRID_LABELS[draft.gridSize];
-    }
-
-    if (previewCurrent) {
-      previewCurrent.innerHTML = pawnIcon(draft.playerColor, 16);
-    }
-  };
-
-  applyThemePreview(draft.themeId);
-  syncSummary();
+  applyThemePreview(draft.themeId ?? PREVIEW_FALLBACK_THEME);
+  syncCurrentPlayerSwatch();
+  syncStartButton();
   syncMarkers();
 
   root.querySelector('[data-action="back"]')?.addEventListener('click', () => {
     callbacks.onBack();
   });
 
-  root.querySelector('[data-action="play"]')?.addEventListener('click', () => {
-    callbacks.onPlay({ ...draft });
+  playButton?.addEventListener('click', () => {
+    if (!isReady() || !draft.themeId || !draft.playerColor || !draft.gridSize) {
+      return;
+    }
+
+    callbacks.onPlay({
+      themeId: draft.themeId,
+      playerColor: draft.playerColor,
+      gridSize: draft.gridSize,
+    });
   });
 
   root.querySelectorAll<HTMLInputElement>('input[name="player-color"]').forEach((input) => {
     input.addEventListener('change', () => {
-      draft = { ...draft, playerColor: input.value as PlayerColor };
-      syncSelection('player', draft.playerColor);
-      syncSummary();
+      const playerColor = input.value as PlayerColor;
+      draft = { ...draft, playerColor };
+      syncSelection('player', playerColor);
+      syncCurrentPlayerSwatch();
+      syncStartButton();
     });
   });
 
   root.querySelectorAll<HTMLInputElement>('input[name="grid-size"]').forEach((input) => {
     input.addEventListener('change', () => {
-      draft = { ...draft, gridSize: input.value as GridSize };
-      syncSelection('grid', draft.gridSize);
-      syncSummary();
+      const gridSize = input.value as GridSize;
+      draft = { ...draft, gridSize };
+      syncSelection('grid', gridSize);
+      syncStartButton();
     });
   });
 
   root.querySelectorAll<HTMLInputElement>('input[name="theme-id"]').forEach((input) => {
     input.addEventListener('change', () => {
-      draft = { ...draft, themeId: input.value as ThemeId };
-      syncSelection('theme', draft.themeId);
-      applyThemePreview(draft.themeId);
-      syncSummary();
+      const themeId = input.value as ThemeId;
+      draft = { ...draft, themeId };
+      syncSelection('theme', themeId);
+      applyThemePreview(themeId);
+      syncStartButton();
     });
   });
 
@@ -315,7 +336,7 @@ export function renderSettingsView(
   });
 
   themeList?.addEventListener('mouseleave', () => {
-    applyThemePreview(draft.themeId);
+    applyThemePreview(draft.themeId ?? PREVIEW_FALLBACK_THEME);
   });
 
   root.querySelectorAll<HTMLElement>('[data-group="player"] .radio-option, [data-group="grid"] .radio-option').forEach((option) => {

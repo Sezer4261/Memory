@@ -1,0 +1,118 @@
+:root {
+  --bg-deep: #2d2d2d;
+  --bg-home: #2d2d2d;
+  --text: #1f2937;
+  --text-light: #ffffff;
+  --text-muted: #6b7280;
+  --yellow: #e4e67a;
+  --yellow-hover: #f0f28a;
+  --orange: #ff9800;
+  --blue: #4fc3f7;
+  --exit: #c23b4a;
+  --exit-hover: #d64b5a;
+  --radius-lg: 18px;
+  --radius-md: 14px;
+  --radius-sm: 10px;
+  --shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+  --frame-max: 960px;
+  --space: clamp(0.5rem, 2vw, 1.25rem);
+  --font-display: 'Montserrat', 'Figtree', sans-serif;
+  --font-ui: 'Figtree', 'Segoe UI', sans-serif;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+html,
+body,
+#app {
+  margin: 0;
+  min-height: 100%;
+  min-height: 100dvh;
+}
+
+body {
+  font-family: var(--font-ui);
+  color: var(--text-light);
+  background: var(--bg-deep);
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: inherit;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.mute-toggle {
+  position: fixed;
+  top: max(0.75rem, var(--safe-top));
+  right: max(0.75rem, var(--safe-right));
+  z-index: 50;
+  width: 2.75rem;
+  height: 2.75rem;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.55);
+  color: #f8fafc;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(8px);
+  transition: background-color 0.15s ease, transform 0.15s ease, color 0.15s ease;
+}
+
+.mute-toggle:hover {
+  transform: translateY(-1px);
+  background: rgba(15, 23, 42, 0.75);
+}
+
+.mute-toggle.is-muted {
+  color: #fca5a5;
+  border-color: rgba(252, 165, 165, 0.45);
+}
+
+.mute-toggle svg {
+  display: block;
+}
+
+.content-frame {
+  width: min(100%, var(--frame-max));
+  margin-inline: auto;
+}
+
+.screen {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding:
+    max(var(--space), var(--safe-top))
+    max(var(--space), var(--safe-right))
+    max(var(--space), var(--safe-bottom))
+    max(var(--space), var(--safe-left));
+}
+
+

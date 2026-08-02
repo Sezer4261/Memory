@@ -1,0 +1,251 @@
+/* ---------- Breakpoints ---------- */
+
+/* Tablets & smaller notebooks */
+@media (max-width: 940px) {
+  .settings-modal__body {
+    grid-template-columns: 1fr;
+  }
+
+  .settings-preview {
+    order: -1;
+  }
+
+  .settings-preview__stage {
+    min-height: 200px;
+  }
+
+  .preview-exit span:last-child {
+    display: none;
+  }
+
+  .preview-current span:first-child {
+    display: none;
+  }
+
+  .settings-action-bar {
+    flex-wrap: wrap;
+  }
+
+  .settings-summary {
+    justify-content: flex-start;
+  }
+
+  .game-header {
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      'score exit'
+      'current current';
+  }
+
+  .scoreboard {
+    grid-area: score;
+  }
+
+  .current-player {
+    grid-area: current;
+  }
+
+  .game-header .btn--exit {
+    grid-area: exit;
+    justify-self: end;
+  }
+}
+
+/* Large phones / small tablets */
+@media (max-width: 700px) {
+  .home-watermark {
+    width: min(300px, 72vw);
+    left: -3.5rem;
+    bottom: -2.75rem;
+  }
+}
+
+/* iPhone SE / small phones */
+@media (max-width: 430px) {
+  .screen--settings {
+    padding-inline: 0.45rem;
+  }
+
+  .settings-modal {
+    max-height: calc(100dvh - 0.9rem);
+    border-radius: 14px;
+  }
+
+  .settings-modal__header {
+    flex-wrap: wrap;
+  }
+
+  .settings-summary {
+    font-size: 1rem;
+  }
+
+  .game-header {
+    grid-template-columns: 1fr auto;
+    gap: 0.35rem;
+    padding: 0.4rem 0.45rem;
+  }
+
+  .current-player span:first-child {
+    font-size: 0.8rem;
+  }
+
+  .btn--exit {
+    padding-inline: 0.55rem;
+    min-width: 2.5rem;
+  }
+
+  .btn--exit__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .btn--exit {
+    position: relative;
+  }
+
+  .card-grid {
+    gap: 0.45rem;
+  }
+
+  .memory-card {
+    border-radius: 11px;
+  }
+
+  .confirm-modal__actions {
+    flex-direction: column;
+  }
+
+  .confirm-modal__actions .btn {
+    width: 100%;
+  }
+}
+
+/* Very small / SE portrait tight height */
+@media (max-width: 380px), (max-height: 700px) and (max-width: 500px) {
+  .home-content {
+    margin-top: 0;
+    gap: 1rem;
+  }
+
+  .screen--game .content-frame {
+    min-height: calc(100dvh - 0.6rem);
+  }
+
+  .game-shell {
+    gap: 0.35rem;
+    padding: 0.35rem;
+  }
+
+  .settings-preview__caption {
+    display: none;
+  }
+}
+
+/* Landscape phones: keep game playable without scrolling */
+@media (max-height: 500px) and (orientation: landscape) {
+  .screen--home,
+  .screen--gameover {
+    align-content: center;
+  }
+
+  .home-content {
+    margin-top: 0;
+    gap: 0.75rem;
+  }
+
+  .home-watermark {
+    width: min(220px, 42vw);
+    height: min(160px, 30vw);
+    left: -2rem;
+    bottom: -1.5rem;
+  }
+
+  .home-title {
+    font-size: clamp(1.4rem, 6vh, 2rem);
+  }
+
+  .home-content {
+    gap: 0.85rem;
+  }
+
+  .screen--game {
+    padding: 0.25rem;
+  }
+
+  .game-header {
+    padding: 0.25rem 0.4rem;
+  }
+
+  .settings-modal {
+    max-height: calc(100dvh - 0.5rem);
+  }
+
+  .settings-preview__stage {
+    min-height: 110px;
+  }
+
+  .confetti-strip {
+    height: 28px;
+  }
+}
+
+/* Widescreen: centered fixed content width */
+@media (min-width: 941px) {
+  .content-frame,
+  .home-content,
+  .settings-modal {
+    width: min(100%, var(--frame-max));
+  }
+
+  .screen--game .content-frame {
+    max-width: min(100%, 920px);
+  }
+}
+
+/* Large desktops / notebooks */
+@media (min-width: 1200px) {
+  .screen--game .content-frame {
+    max-width: min(100%, 980px);
+  }
+
+  .card-grid {
+    gap: 0.75rem;
+  }
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .memory-card__inner,
+  .btn,
+  .btn--pulse,
+  .home-anim,
+  .settings-anim,
+  .settings-modal--enter,
+  .preview-card--back,
+  .preview-card--front,
+  .screen--home,
+  .screen--gameover,
+  .gameover-anim__item,
+  .result-anim__item,
+  .gameover-score,
+  .result-anim .result-icon,
+  .confetti-strip,
+  .confetti-burst__piece {
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .home-watermark {
+    transform: rotate(-35deg) !important;
+  }
+}
+

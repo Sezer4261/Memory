@@ -1,0 +1,122 @@
+/* ---------- Home ---------- */
+
+.screen--home {
+  position: relative;
+  overflow: hidden;
+  place-content: center;
+  justify-items: center;
+  background: var(--bg-home);
+  animation: screen-fade-in 0.45s ease both;
+}
+
+.home-watermark {
+  position: absolute;
+  left: -5.5rem;
+  bottom: -4.25rem;
+  width: min(414px, 58vw);
+  aspect-ratio: 414 / 301;
+  color: #6f6f6f;
+  pointer-events: none;
+  z-index: 0;
+  transform: rotate(-35deg);
+  transform-origin: center;
+}
+
+.home-watermark__svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.home-content {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  justify-items: center;
+  gap: 2.25rem;
+  max-width: 100%;
+  width: min(100%, 52rem);
+}
+
+.home-copy {
+  display: grid;
+  justify-items: start;
+  gap: 0.45rem;
+  text-align: left;
+}
+
+.home-eyebrow {
+  margin: 0;
+  color: #ffffff;
+  letter-spacing: 0;
+  text-transform: none;
+  font-size: clamp(1.35rem, 3.2vw, 1.75rem);
+  font-weight: 400;
+  line-height: 1.3;
+}
+
+.home-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(4rem, 13vw, 7.25rem);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 0.95;
+  color: #ffffff;
+  max-width: 12ch;
+}
+
+.home-anim {
+  opacity: 0;
+  animation: home-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.home-anim--1 { animation-delay: 0.05s; }
+.home-anim--2 { animation-delay: 0.18s; }
+.home-anim--3 { animation-delay: 0.34s; }
+
+/* Opacity-only so hover transform is not locked by animation forwards */
+.home-anim--3.btn--play {
+  animation: home-fade 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.34s forwards;
+}
+
+.btn--pulse {
+  animation: button-pulse 2s ease-in-out infinite;
+}
+
+@keyframes screen-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes home-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes home-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes button-pulse {
+  0%, 100% {
+    box-shadow: 0 8px 18px rgba(232, 233, 89, 0.28);
+    transform: translateY(0);
+  }
+
+  50% {
+    box-shadow: 0 12px 28px rgba(245, 213, 71, 0.5);
+    transform: translateY(-2px);
+  }
+}
+
+
