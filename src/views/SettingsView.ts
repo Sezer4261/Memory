@@ -37,6 +37,12 @@ export function renderSettingsView(
     gridSize: null,
   };
 
+  // Unique names each visit so browsers cannot restore a previous radio choice.
+  const fieldId = `settings-${Date.now().toString(36)}`;
+  const themeName = `${fieldId}-theme`;
+  const playerName = `${fieldId}-player`;
+  const gridName = `${fieldId}-grid`;
+
   const previewTheme = THEMES[PREVIEW_FALLBACK_THEME];
 
   root.innerHTML = `
@@ -56,7 +62,7 @@ export function renderSettingsView(
           <button type="button" class="btn btn--text" data-action="back">Startseite</button>
         </header>
 
-          <form class="settings-options settings-anim settings-anim--2" aria-label="Spieleinstellungen">
+          <form class="settings-options settings-anim settings-anim--2" aria-label="Spieleinstellungen" autocomplete="off">
             <fieldset class="settings-group" data-group="theme">
               <legend>
                 ${settingsSectionIcon('theme')}
@@ -66,7 +72,7 @@ export function renderSettingsView(
                 .map(
                   (entry) => `
                     <label class="radio-option" data-theme-option="${entry.id}">
-                      <input type="radio" name="theme-id" value="${entry.id}" />
+                      <input type="radio" name="${themeName}" value="${entry.id}" autocomplete="off" />
                       <span class="radio-option__control" aria-hidden="true"></span>
                       <span class="radio-option__label">${entry.label}</span>
                       <span class="radio-option__marker" aria-hidden="true"></span>
@@ -85,7 +91,7 @@ export function renderSettingsView(
                 const label = color === 'blue' ? 'Blue' : 'Orange';
                 return `
                   <label class="radio-option">
-                    <input type="radio" name="player-color" value="${color}" />
+                    <input type="radio" name="${playerName}" value="${color}" autocomplete="off" />
                     <span class="radio-option__control" aria-hidden="true"></span>
                     <span class="radio-option__label">${label}</span>
                     <span class="radio-option__marker" aria-hidden="true"></span>
@@ -102,7 +108,7 @@ export function renderSettingsView(
               ${GRID_OPTIONS.map(
                 (size) => `
                   <label class="radio-option">
-                    <input type="radio" name="grid-size" value="${size}" />
+                    <input type="radio" name="${gridName}" value="${size}" autocomplete="off" />
                     <span class="radio-option__control" aria-hidden="true"></span>
                     <span class="radio-option__label">${GRID_LABELS[size]}</span>
                     <span class="radio-option__marker" aria-hidden="true"></span>
@@ -301,6 +307,17 @@ export function renderSettingsView(
     event.preventDefault();
   });
 
+  const clearAllSelections = (): void => {
+    draft = { themeId: null, playerColor: null, gridSize: null };
+    root.querySelectorAll<HTMLInputElement>('.settings-options input[type="radio"]').forEach((input) => {
+      input.checked = false;
+    });
+    root.querySelectorAll<HTMLElement>('.settings-options .radio-option').forEach((option) => {
+      option.classList.remove('is-selected', 'is-hovered', 'show-marker');
+    });
+  };
+
+  clearAllSelections();
   applyThemePreview(PREVIEW_FALLBACK_THEME);
   syncCurrentPlayerBadge();
   syncSummary();
@@ -323,7 +340,7 @@ export function renderSettingsView(
     });
   });
 
-  root.querySelectorAll<HTMLInputElement>('input[name="player-color"]').forEach((input) => {
+  root.querySelectorAll<HTMLInputElement>(`input[name="${playerName}"]`).forEach((input) => {
     input.addEventListener('change', () => {
       const playerColor = input.value as PlayerColor;
       draft = { ...draft, playerColor };
@@ -334,7 +351,7 @@ export function renderSettingsView(
     });
   });
 
-  root.querySelectorAll<HTMLInputElement>('input[name="grid-size"]').forEach((input) => {
+  root.querySelectorAll<HTMLInputElement>(`input[name="${gridName}"]`).forEach((input) => {
     input.addEventListener('change', () => {
       const gridSize = input.value as GridSize;
       draft = { ...draft, gridSize };
@@ -344,7 +361,7 @@ export function renderSettingsView(
     });
   });
 
-  root.querySelectorAll<HTMLInputElement>('input[name="theme-id"]').forEach((input) => {
+  root.querySelectorAll<HTMLInputElement>(`input[name="${themeName}"]`).forEach((input) => {
     input.addEventListener('change', () => {
       const themeId = input.value as ThemeId;
       draft = { ...draft, themeId };
