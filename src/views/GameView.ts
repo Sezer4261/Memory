@@ -68,60 +68,55 @@ function mountGameView(
         --board-text: ${theme.textOnBoard};
       "
     >
-      <div class="content-frame">
-        <div class="game-shell">
-          <header class="game-header">
-            <div class="scoreboard" aria-label="Punktestand" data-scoreboard>
-              ${renderScoreboard(snapshot)}
-            </div>
+      <header class="game-header">
+        <ul class="scoreboard" aria-label="Punktestand" data-scoreboard>
+          ${renderScoreboard(snapshot)}
+        </ul>
 
-            <div class="current-player" aria-live="polite" data-current-player>
-              ${renderCurrentPlayer(currentPlayer.color)}
-            </div>
+        <p class="current-player" aria-live="polite" data-current-player>
+          ${renderCurrentPlayer(currentPlayer.color)}
+        </p>
 
-            <button type="button" class="btn btn--exit" data-action="exit">
-              ${exitIcon()}
-              <span class="btn--exit__label">Exit game</span>
-            </button>
-          </header>
+        <button type="button" class="btn btn--exit" data-action="exit">
+          ${exitIcon()}
+          <span class="btn--exit__label">Exit game</span>
+        </button>
+      </header>
 
-          <div class="game-board">
-            <div
-              class="card-grid"
-              style="--columns: ${snapshot.columns}; --rows: ${snapshot.rows}"
-              role="grid"
-              aria-label="Memory-Karten"
-              data-card-grid
-            >
-              ${snapshot.cards
-                .map((card) => {
-                  const isOpen = card.isFlipped || card.isMatched;
-                  return `
-                    <button
-                      type="button"
-                      class="memory-card ${isOpen ? 'is-flipped' : ''} ${card.isMatched ? 'is-matched' : ''}"
-                      data-card-id="${card.id}"
-                      ${card.isMatched || snapshot.isLocked ? 'disabled' : ''}
-                      aria-label="Karte ${card.id + 1}"
-                    >
-                      <span class="memory-card__inner">
-                        <span class="memory-card__face memory-card__face--back"></span>
-                        <span class="memory-card__face memory-card__face--front">
-                          <span class="memory-card__motif">${renderMotif(card.motif)}</span>
-                        </span>
-                      </span>
-                    </button>
-                  `;
-                })
-                .join('')}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div data-exit-slot>${showExitDialog ? renderExitDialog() : ''}</div>
+      <main
+        class="card-grid"
+        style="--columns: ${snapshot.columns}; --rows: ${snapshot.rows}"
+        aria-label="Memory-Karten"
+        data-card-grid
+      >
+        ${snapshot.cards
+          .map((card) => {
+            const isOpen = card.isFlipped || card.isMatched;
+            return `
+              <button
+                type="button"
+                class="memory-card ${isOpen ? 'is-flipped' : ''} ${card.isMatched ? 'is-matched' : ''}"
+                data-card-id="${card.id}"
+                ${card.isMatched || snapshot.isLocked ? 'disabled' : ''}
+                aria-label="Karte ${card.id + 1}"
+              >
+                <span class="memory-card__inner">
+                  <span class="memory-card__face memory-card__face--back"></span>
+                  <span class="memory-card__face memory-card__face--front">
+                    <span class="memory-card__motif">${renderMotif(card.motif)}</span>
+                  </span>
+                </span>
+              </button>
+            `;
+          })
+          .join('')}
+      </main>
     </section>
   `;
+
+  if (showExitDialog) {
+    openExitDialog(root, callbacks);
+  }
 
   bindGameEvents(root, callbacks);
   scheduleFinished(root, snapshot, callbacks, showExitDialog);
@@ -169,15 +164,12 @@ function syncGameView(
     button.disabled = card.isMatched || snapshot.isLocked;
   });
 
-  const exitSlot = screen.querySelector<HTMLElement>('[data-exit-slot]');
-  if (exitSlot) {
-    const hasDialog = Boolean(exitSlot.querySelector('.modal-overlay'));
-    if (showExitDialog && !hasDialog) {
-      exitSlot.innerHTML = renderExitDialog();
-      bindExitDialogEvents(exitSlot, callbacks);
-    } else if (!showExitDialog && hasDialog) {
-      exitSlot.innerHTML = '';
-    }
+  const existingDialog = screen.querySelector<HTMLDialogElement>('dialog.confirm-modal');
+  if (showExitDialog && !existingDialog) {
+    openExitDialog(root, callbacks);
+  } else if (!showExitDialog && existingDialog) {
+    existingDialog.close();
+    existingDialog.remove();
   }
 
   scheduleFinished(root, snapshot, callbacks, showExitDialog);
@@ -187,10 +179,10 @@ function renderScoreboard(snapshot: GameSnapshot): string {
   return snapshot.players
     .map(
       (player) => `
-        <div class="scoreboard__item scoreboard__item--${player.color}">
+        <li class="scoreboard__item scoreboard__item--${player.color}">
           ${pawnIcon(player.color, 28)}
           <span class="scoreboard__score">${player.score}</span>
-        </div>
+        </li>
       `,
     )
     .join('');
@@ -205,18 +197,28 @@ function renderCurrentPlayer(color: 'blue' | 'orange'): string {
   `;
 }
 
-function renderExitDialog(): string {
-  return `
-    <div class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="exit-title">
-      <div class="confirm-modal">
+function openExitDialog(root: HTMLElement, callbacks: GameViewCallbacks): void {
+  const screen = root.querySelector('.screen--game');
+  if (!screen || screen.querySelector('dialog.confirm-modal')) {
+    return;
+  }
+
+  screen.insertAdjacentHTML(
+    'beforeend',
+    `
+      <dialog class="confirm-modal" aria-labelledby="exit-title">
         <h2 id="exit-title">Are you sure you want<br />to quit the game?</h2>
-        <div class="confirm-modal__actions">
+        <menu class="confirm-modal__actions">
           <button type="button" class="btn btn--confirm-fill" data-action="exit-cancel">No, back to game</button>
           <button type="button" class="btn btn--confirm-outline" data-action="exit-confirm">Exit game</button>
-        </div>
-      </div>
-    </div>
-  `;
+        </menu>
+      </dialog>
+    `,
+  );
+
+  const dialog = screen.querySelector<HTMLDialogElement>('dialog.confirm-modal');
+  dialog?.showModal();
+  bindExitDialogEvents(dialog ?? screen, callbacks);
 }
 
 function bindGameEvents(root: HTMLElement, callbacks: GameViewCallbacks): void {

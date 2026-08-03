@@ -4,7 +4,6 @@
   background: var(--board-bg, #1f2933);
   color: var(--board-text, #f8fafc);
   position: relative;
-  overflow: hidden;
   animation: screen-fade-in 0.35s ease both;
 }
 
@@ -46,6 +45,8 @@
   justify-content: center;
   gap: clamp(0.55rem, 2vw, 1rem);
   margin: 0.5rem 0 0.75rem;
+  padding: 0;
+  list-style: none;
   flex-wrap: wrap;
 }
 
@@ -125,7 +126,6 @@
   left: 0;
   right: 0;
   height: 48px;
-  overflow: hidden;
   pointer-events: none;
   animation: confetti-wave 1.2s ease-out both;
 }
@@ -141,7 +141,6 @@
 .confetti-burst {
   position: absolute;
   inset: 0;
-  overflow: hidden;
   pointer-events: none;
 }
 

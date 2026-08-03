@@ -2,27 +2,62 @@
 
 .screen--settings {
   position: relative;
-  background:
-    radial-gradient(circle at top right, rgba(245, 213, 71, 0.08), transparent 35%),
-    radial-gradient(circle at bottom left, rgba(45, 212, 191, 0.1), transparent 40%),
-    #1e2f3c;
+  background: #ffffff;
+  color: var(--text);
+  display: flex;
+  justify-content: center;
+  align-items: center;
   overflow: auto;
-  align-content: start;
-  padding-block: max(0.75rem, var(--safe-top)) max(0.75rem, var(--safe-bottom));
+  padding:
+    max(1.5rem, var(--safe-top))
+    max(clamp(1.5rem, 6vw, 4rem), var(--safe-right))
+    max(1.5rem, var(--safe-bottom))
+    max(clamp(1.5rem, 6vw, 4rem), var(--safe-left));
 }
 
 .settings-modal {
   position: relative;
   z-index: 2;
-  width: min(100%, 820px);
-  max-height: calc(100dvh - 1.5rem);
-  display: flex;
-  flex-direction: column;
+  width: min(100%, 880px);
+  max-height: calc(100dvh - 3rem);
+  flex: 0 1 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  grid-template-rows: auto minmax(0, 1fr);
+  column-gap: clamp(1.5rem, 4vw, 3rem);
+  row-gap: 0;
   background: #fff;
   color: var(--text);
-  border-radius: clamp(14px, 3vw, 22px);
-  box-shadow: var(--shadow);
-  overflow: hidden;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0;
+  align-content: start;
+  overflow: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.settings-modal__header {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0 0 0.75rem;
+  flex-shrink: 0;
+}
+
+.settings-options {
+  min-width: 0;
+  padding-top: 0.35rem;
+}
+
+.settings-preview {
+  min-width: 0;
+  padding-top: 0.35rem;
+  display: grid;
+  align-content: start;
+  gap: 0.75rem;
 }
 
 .settings-modal--enter {
@@ -64,79 +99,51 @@
   }
 }
 
-.settings-modal__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  padding: clamp(0.85rem, 2.5vw, 1.25rem) clamp(0.85rem, 3vw, 1.5rem) 0.5rem;
+.settings-modal__header .btn--text {
+  color: #4b5563;
   flex-shrink: 0;
-}
-
-.settings-title-wrap {
-  display: grid;
-  gap: 0.4rem;
-  justify-items: start;
+  font-size: 20px;
 }
 
 .settings-title {
   margin: 0;
-  font-size: clamp(1.4rem, 5vw, 1.85rem);
+  font-size: 54px;
   font-weight: 800;
   letter-spacing: -0.02em;
   color: #374151;
   line-height: 1.1;
+  position: relative;
+  padding-bottom: 0.55rem;
 }
 
-.settings-title__rule {
-  position: relative;
-  display: block;
+.settings-title::after {
+  content: '';
+  position: absolute;
+  left: 0.2rem;
+  bottom: 0;
   width: 3.35rem;
   height: 2px;
   background: var(--yellow);
-  margin-inline: 0.2rem;
 }
 
-.settings-title__rule::before,
-.settings-title__rule::after {
+.settings-title::before {
   content: '';
   position: absolute;
-  top: 50%;
+  left: 0;
+  bottom: -2.5px;
   width: 7px;
   height: 7px;
   background: var(--yellow);
-  transform: translateY(-50%) rotate(45deg);
-}
-
-.settings-title__rule::before {
-  left: -3px;
-}
-
-.settings-title__rule::after {
-  right: -3px;
-}
-
-.settings-modal__header .btn--text {
-  color: #4b5563;
-  flex-shrink: 0;
-}
-
-.settings-modal__body {
-  display: grid;
-  grid-template-columns: 1.15fr 0.85fr;
-  gap: clamp(0.75rem, 2vw, 1.25rem);
-  padding: 0.75rem clamp(0.85rem, 3vw, 1.5rem) 1.25rem;
-  overflow: auto;
-  overscroll-behavior: contain;
-  -webkit-overflow-scrolling: touch;
-  flex: 1 1 auto;
-  min-height: 0;
+  transform: rotate(45deg);
+  box-shadow: 3.15rem 0 0 var(--yellow);
 }
 
 .settings-group {
   margin: 0 0 1rem;
   padding: 0;
   border: none;
+  display: grid;
+  gap: 0.15rem;
 }
 
 .settings-group legend {
@@ -145,12 +152,12 @@
   gap: 0.45rem;
   margin-bottom: 0.55rem;
   font-weight: 700;
-  font-size: clamp(0.95rem, 3vw, 1.05rem);
+  font-size: 24px;
 }
 
-.radio-list {
-  display: grid;
-  gap: 0.15rem;
+.settings-group legend svg {
+  width: 24px;
+  height: 24px;
 }
 
 .radio-option {
@@ -164,6 +171,7 @@
   border: none;
   background: transparent;
   font-weight: 500;
+  font-size: 20px;
   color: #374151;
   transition: color 0.15s ease, font-weight 0.15s ease;
 }
@@ -258,12 +266,6 @@
   opacity: 1;
 }
 
-.settings-preview {
-  display: grid;
-  align-content: start;
-  gap: 0.75rem;
-}
-
 .settings-preview__stage {
   position: relative;
   min-height: clamp(220px, 34vw, 300px);
@@ -271,11 +273,11 @@
   background: var(--preview-board, #243b4a);
   color: var(--preview-text, #f8fafc);
   box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06);
-  overflow: hidden;
   display: grid;
   grid-template-rows: auto 1fr;
   gap: 0;
   padding: 0;
+  margin: 0;
   transition: background-color 0.25s ease;
 }
 
@@ -284,42 +286,59 @@
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 0.45rem;
-  padding: 0.55rem 0.65rem 0.35rem;
+  padding: 0.45rem 0.55rem;
   border-radius: 0;
-  background: var(--preview-board, #243b4a);
+  background: var(--preview-header, rgba(45, 40, 70, 0.55));
   color: var(--preview-text, #f8fafc);
-  font-size: 0.7rem;
+  font-size: 10px;
   font-weight: 600;
   min-width: 0;
   border: none;
   box-shadow: none;
-  backdrop-filter: none;
+  backdrop-filter: blur(6px);
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+.preview-scoreboard,
+.preview-current,
+.preview-exit {
+  margin: 0;
 }
 
 .preview-scoreboard {
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
+  padding: 0;
+  list-style: none;
 }
 
-.preview-score {
+.preview-score-item {
   display: inline-flex;
   align-items: center;
-  padding: 0.16rem 0.48rem;
-  border-radius: 5px;
-  color: #fff;
-  font-size: 0.68rem;
+  gap: 0.22rem;
+  padding: 0.14rem 0.4rem;
+  border-radius: 7px;
+  background: #fff;
+  color: #1b2430;
+  font-size: 10px;
   font-weight: 700;
-  line-height: 1.15;
-  white-space: nowrap;
+  line-height: 1;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.14);
 }
 
-.preview-score--blue {
-  background: #4fc3f7;
+.preview-score-item .pawn-icon {
+  width: 14px;
+  height: 14px;
+  display: block;
 }
 
-.preview-score--orange {
-  background: #ff9800;
+.preview-score-item--blue span:last-child {
+  color: #4fc3f7;
+}
+
+.preview-score-item--orange span:last-child {
+  color: #ff9800;
 }
 
 .preview-current {
@@ -329,38 +348,46 @@
   gap: 0.35rem;
   min-width: 0;
   white-space: nowrap;
-  overflow: hidden;
   text-overflow: ellipsis;
-  color: #f3f4f6;
+  color: inherit;
 }
 
-.preview-current__swatch {
-  width: 1rem;
-  height: 1rem;
-  border-radius: 3px;
+.preview-current__badge {
+  display: inline-grid;
+  place-items: center;
+  width: 1.15rem;
+  height: 1.15rem;
+  border-radius: 4px;
   flex-shrink: 0;
 }
 
-.preview-current__swatch--blue {
+.preview-current__badge--blue {
   background: #4fc3f7;
 }
 
-.preview-current__swatch--orange {
+.preview-current__badge--orange {
   background: #ff9800;
+}
+
+.preview-current__badge .pawn-icon {
+  width: 12px;
+  height: 12px;
+  display: block;
 }
 
 .preview-exit {
   display: inline-flex;
   align-items: center;
   gap: 0.28rem;
-  padding: 0.22rem 0.5rem;
-  border-radius: 5px;
-  background: transparent;
-  color: #0f766e;
-  border: 1.5px solid #0f766e;
-  font-size: 0.66rem;
+  padding: 0.22rem 0.48rem;
+  border-radius: 7px;
+  background: var(--preview-accent, #14b8a6);
+  color: #fff;
+  border: 1.5px solid var(--preview-accent, #14b8a6);
+  font-size: 10px;
   font-weight: 600;
   white-space: nowrap;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .preview-exit svg {
@@ -379,12 +406,14 @@
   position: absolute;
   width: clamp(78px, 13vw, 104px);
   height: clamp(104px, 17vw, 136px);
-  border-radius: 14px;
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+  border-radius: 12px;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.28) inset,
+    0 -2px 0 rgba(0, 0, 0, 0.12) inset,
+    0 10px 24px rgba(0, 0, 0, 0.28);
   display: grid;
   place-items: center;
   padding: 0;
-  overflow: hidden;
   transition: background 0.25s ease;
 }
 
@@ -442,9 +471,14 @@
   gap: 0.55rem;
   color: #374151;
   font-weight: 700;
-  font-size: clamp(0.95rem, 2.4vw, 1.15rem);
+  font-size: 20px;
   line-height: 1.2;
   min-width: 0;
+}
+
+.settings-summary__value.is-placeholder {
+  color: #9ca3af;
+  font-weight: 600;
 }
 
 .settings-summary__slash {
@@ -464,6 +498,7 @@
   box-shadow: none;
   background: #d1d5db;
   color: #6b7280;
+  font-size: 20px;
   transition:
     background-color 0.15s ease,
     color 0.15s ease,

@@ -2,9 +2,10 @@
 
 .screen--home {
   position: relative;
-  overflow: hidden;
   place-content: center;
   justify-items: center;
+  align-content: center;
+  gap: 2.25rem;
   background: var(--bg-home);
   animation: screen-fade-in 0.45s ease both;
 }
@@ -29,21 +30,20 @@
   overflow: visible;
 }
 
-.home-content {
+.home-header {
   position: relative;
   z-index: 1;
-  display: grid;
-  justify-items: center;
-  gap: 2.25rem;
-  max-width: 100%;
-  width: min(100%, 52rem);
-}
-
-.home-copy {
   display: grid;
   justify-items: start;
   gap: 0.45rem;
   text-align: left;
+  max-width: 100%;
+  width: min(100%, 52rem);
+}
+
+.screen--home > .btn--play {
+  position: relative;
+  z-index: 1;
 }
 
 .home-eyebrow {

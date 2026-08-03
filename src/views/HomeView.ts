@@ -17,20 +17,18 @@ export function renderHomeView(
 ): void {
   root.innerHTML = `
     <section class="screen screen--home" aria-label="Startseite">
-      <div class="home-watermark" aria-hidden="true">
+      <span class="home-watermark" aria-hidden="true">
         ${watermarkControllerIcon()}
-      </div>
-      <div class="home-content">
-        <div class="home-copy">
-          <p class="home-eyebrow home-anim home-anim--1">It's play time.</p>
-          <h1 class="home-title home-anim home-anim--2">Ready to play?</h1>
-        </div>
-        <button type="button" class="btn btn--play home-anim home-anim--3" data-action="start">
-          <span class="btn__icon btn__icon--controller" aria-hidden="true">${controllerLineIcon()}</span>
-          <span class="btn__label">Play</span>
-          <span class="btn__icon btn__icon--arrow" aria-hidden="true">${arrowRightIcon()}</span>
-        </button>
-      </div>
+      </span>
+      <header class="home-header">
+        <p class="home-eyebrow home-anim home-anim--1">It's play time.</p>
+        <h1 class="home-title home-anim home-anim--2">Ready to play?</h1>
+      </header>
+      <button type="button" class="btn btn--play home-anim home-anim--3" data-action="start">
+        <span class="btn__icon btn__icon--controller" aria-hidden="true">${controllerLineIcon()}</span>
+        <span class="btn__label">Play</span>
+        <span class="btn__icon btn__icon--arrow" aria-hidden="true">${arrowRightIcon()}</span>
+      </button>
     </section>
   `;
 

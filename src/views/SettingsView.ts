@@ -1,5 +1,6 @@
 import {
   exitIcon,
+  pawnIcon,
   playIcon,
   settingsSectionIcon,
 } from '../components/icons';
@@ -30,144 +31,129 @@ export function renderSettingsView(
   _initialSettings: GameSettings,
   callbacks: SettingsViewCallbacks,
 ): void {
-  // Match screenshot: theme preselected, player & board empty until chosen.
   let draft: DraftSelection = {
-    themeId: 'code',
+    themeId: null,
     playerColor: null,
     gridSize: null,
   };
 
-  const previewTheme = THEMES[draft.themeId ?? PREVIEW_FALLBACK_THEME];
+  const previewTheme = THEMES[PREVIEW_FALLBACK_THEME];
 
   root.innerHTML = `
     <section
       class="screen screen--settings"
       aria-label="Spieleinstellungen"
-      style="--preview-back: ${previewTheme.cardBackGradient}; --preview-board: ${previewTheme.boardBackground}; --preview-header: ${previewTheme.headerBackground}; --preview-text: ${previewTheme.textOnBoard}"
+      style="--preview-back: ${previewTheme.cardBackGradient}; --preview-board: ${previewTheme.boardBackground}; --preview-header: ${previewTheme.headerBackground}; --preview-text: ${previewTheme.textOnBoard}; --preview-accent: ${previewTheme.accent}"
     >
-      <div class="settings-modal settings-modal--enter" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+      <article
+        class="settings-modal settings-modal--enter"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="settings-title"
+      >
         <header class="settings-modal__header settings-anim settings-anim--1">
-          <div class="settings-title-wrap">
-            <h1 id="settings-title" class="settings-title">Settings</h1>
-            <span class="settings-title__rule" aria-hidden="true"></span>
-          </div>
+          <h1 id="settings-title" class="settings-title">Settings</h1>
           <button type="button" class="btn btn--text" data-action="back">Startseite</button>
         </header>
 
-        <div class="settings-modal__body">
-          <div class="settings-options">
-            <fieldset class="settings-group settings-anim settings-anim--2">
+          <form class="settings-options settings-anim settings-anim--2" aria-label="Spieleinstellungen">
+            <fieldset class="settings-group" data-group="theme">
               <legend>
                 ${settingsSectionIcon('theme')}
                 <span>Game themes</span>
               </legend>
-              <div class="radio-list" role="radiogroup" aria-label="Theme" data-group="theme">
-                ${Object.values(THEMES)
-                  .map((entry) => {
-                    const selected = draft.themeId === entry.id;
-                    return `
-                      <label
-                        class="radio-option ${selected ? 'is-selected show-marker' : ''}"
-                        data-theme-option="${entry.id}"
-                      >
-                        <input
-                          type="radio"
-                          name="theme-id"
-                          value="${entry.id}"
-                          ${selected ? 'checked' : ''}
-                        />
-                        <span class="radio-option__control" aria-hidden="true"></span>
-                        <span class="radio-option__label">${entry.label}</span>
-                        <span class="radio-option__marker" aria-hidden="true"></span>
-                      </label>
-                    `;
-                  })
-                  .join('')}
-              </div>
+              ${Object.values(THEMES)
+                .map(
+                  (entry) => `
+                    <label class="radio-option" data-theme-option="${entry.id}">
+                      <input type="radio" name="theme-id" value="${entry.id}" />
+                      <span class="radio-option__control" aria-hidden="true"></span>
+                      <span class="radio-option__label">${entry.label}</span>
+                      <span class="radio-option__marker" aria-hidden="true"></span>
+                    </label>
+                  `,
+                )
+                .join('')}
             </fieldset>
 
-            <fieldset class="settings-group settings-anim settings-anim--3">
+            <fieldset class="settings-group settings-anim settings-anim--3" data-group="player">
               <legend>
                 ${settingsSectionIcon('player')}
                 <span>Choose player</span>
               </legend>
-              <div class="radio-list" role="radiogroup" aria-label="Spielerfarbe" data-group="player">
-                ${PLAYER_OPTIONS.map((color) => {
-                  const label = color === 'blue' ? 'Blue' : 'Orange';
-                  return `
-                    <label class="radio-option">
-                      <input
-                        type="radio"
-                        name="player-color"
-                        value="${color}"
-                      />
-                      <span class="radio-option__control" aria-hidden="true"></span>
-                      <span class="radio-option__label">${label}</span>
-                      <span class="radio-option__marker" aria-hidden="true"></span>
-                    </label>
-                  `;
-                }).join('')}
-              </div>
+              ${PLAYER_OPTIONS.map((color) => {
+                const label = color === 'blue' ? 'Blue' : 'Orange';
+                return `
+                  <label class="radio-option">
+                    <input type="radio" name="player-color" value="${color}" />
+                    <span class="radio-option__control" aria-hidden="true"></span>
+                    <span class="radio-option__label">${label}</span>
+                    <span class="radio-option__marker" aria-hidden="true"></span>
+                  </label>
+                `;
+              }).join('')}
             </fieldset>
 
-            <fieldset class="settings-group settings-anim settings-anim--4">
+            <fieldset class="settings-group settings-anim settings-anim--4" data-group="grid">
               <legend>
                 ${settingsSectionIcon('board')}
                 <span>Board size</span>
               </legend>
-              <div class="radio-list" role="radiogroup" aria-label="Spielfeldgröße" data-group="grid">
-                ${GRID_OPTIONS.map((size) => {
-                  return `
-                    <label class="radio-option">
-                      <input
-                        type="radio"
-                        name="grid-size"
-                        value="${size}"
-                      />
-                      <span class="radio-option__control" aria-hidden="true"></span>
-                      <span class="radio-option__label">${GRID_LABELS[size]}</span>
-                      <span class="radio-option__marker" aria-hidden="true"></span>
-                    </label>
-                  `;
-                }).join('')}
-              </div>
+              ${GRID_OPTIONS.map(
+                (size) => `
+                  <label class="radio-option">
+                    <input type="radio" name="grid-size" value="${size}" />
+                    <span class="radio-option__control" aria-hidden="true"></span>
+                    <span class="radio-option__label">${GRID_LABELS[size]}</span>
+                    <span class="radio-option__marker" aria-hidden="true"></span>
+                  </label>
+                `,
+              ).join('')}
             </fieldset>
-          </div>
+          </form>
 
           <aside class="settings-preview settings-anim settings-anim--2" aria-label="Theme-Vorschau">
-            <div class="settings-preview__stage" data-preview-stage>
-              <div class="preview-game-header">
-                <div class="preview-scoreboard">
-                  <span class="preview-score preview-score--blue">Blue 0</span>
-                  <span class="preview-score preview-score--orange">Orange 0</span>
-                </div>
-                <div class="preview-current">
+            <figure class="settings-preview__stage" data-preview-stage>
+              <header class="preview-game-header">
+                <ul class="preview-scoreboard">
+                  <li class="preview-score-item preview-score-item--blue">
+                    ${pawnIcon('blue', 16)}
+                    <span>0</span>
+                  </li>
+                  <li class="preview-score-item preview-score-item--orange">
+                    ${pawnIcon('orange', 16)}
+                    <span>0</span>
+                  </li>
+                </ul>
+                <p class="preview-current">
                   <span>Current player:</span>
-                  <span class="preview-current__swatch preview-current__swatch--blue" data-preview-current></span>
-                </div>
-                <span class="preview-exit">
+                  <span class="preview-current__badge preview-current__badge--blue" data-preview-current>
+                    ${pawnIcon('white', 14)}
+                  </span>
+                </p>
+                <p class="preview-exit">
                   ${exitIcon()}
                   <span>Exit game</span>
-                </span>
-              </div>
-              <div class="preview-cards">
-                <div class="preview-card preview-card--back">
+                </p>
+              </header>
+              <section class="preview-cards" aria-hidden="true">
+                <article class="preview-card preview-card--back">
                   <span data-preview-back-motif>${renderMotif(previewTheme.motifs[1] ?? 'typescript')}</span>
-                </div>
-                <div class="preview-card preview-card--front">
+                </article>
+                <article class="preview-card preview-card--front">
                   <span data-preview-motif>${renderMotif(previewTheme.motifs[0] ?? 'git')}</span>
-                </div>
-              </div>
-            </div>
+                </article>
+              </section>
+            </figure>
 
-            <div class="settings-action-bar settings-anim settings-anim--5">
-              <nav class="settings-summary" aria-label="Auswahl">
-                <span>Game theme</span>
+            <footer class="settings-action-bar settings-anim settings-anim--5">
+              <p class="settings-summary" aria-label="Auswahl">
+                <span data-summary-theme class="settings-summary__value is-placeholder">Game theme</span>
                 <span class="settings-summary__slash" aria-hidden="true"></span>
-                <span>Player</span>
+                <span data-summary-player class="settings-summary__value is-placeholder">Player</span>
                 <span class="settings-summary__slash" aria-hidden="true"></span>
-                <span>Board size</span>
-              </nav>
+                <span data-summary-board class="settings-summary__value is-placeholder">Board size</span>
+              </p>
               <button
                 type="button"
                 class="btn btn--yellow btn--start"
@@ -178,10 +164,9 @@ export function renderSettingsView(
                 <span class="btn__icon btn__icon--boxed">${playIcon()}</span>
                 <span>Start</span>
               </button>
-            </div>
+            </footer>
           </aside>
-        </div>
-      </div>
+      </article>
     </section>
   `;
 
@@ -191,6 +176,9 @@ export function renderSettingsView(
   const previewCurrent = root.querySelector<HTMLElement>('[data-preview-current]');
   const playButton = root.querySelector<HTMLButtonElement>('[data-action="play"]');
   const themeList = root.querySelector<HTMLElement>('[data-group="theme"]');
+  const summaryTheme = root.querySelector<HTMLElement>('[data-summary-theme]');
+  const summaryPlayer = root.querySelector<HTMLElement>('[data-summary-player]');
+  const summaryBoard = root.querySelector<HTMLElement>('[data-summary-board]');
 
   const isReady = (): boolean =>
     draft.themeId !== null && draft.playerColor !== null && draft.gridSize !== null;
@@ -204,6 +192,33 @@ export function renderSettingsView(
     playButton.disabled = !ready;
     playButton.setAttribute('aria-disabled', ready ? 'false' : 'true');
     playButton.classList.toggle('is-ready', ready);
+  };
+
+  const syncSummary = (): void => {
+    if (summaryTheme) {
+      const themeId = draft.themeId;
+      const hasTheme = themeId !== null;
+      summaryTheme.textContent = hasTheme ? THEMES[themeId].shortLabel : 'Game theme';
+      summaryTheme.classList.toggle('is-placeholder', !hasTheme);
+    }
+
+    if (summaryPlayer) {
+      const playerColor = draft.playerColor;
+      const hasPlayer = playerColor !== null;
+      summaryPlayer.textContent = hasPlayer
+        ? playerColor === 'blue'
+          ? 'Blue'
+          : 'Orange'
+        : 'Player';
+      summaryPlayer.classList.toggle('is-placeholder', !hasPlayer);
+    }
+
+    if (summaryBoard) {
+      const gridSize = draft.gridSize;
+      const hasBoard = gridSize !== null;
+      summaryBoard.textContent = hasBoard ? GRID_LABELS[gridSize] : 'Board size';
+      summaryBoard.classList.toggle('is-placeholder', !hasBoard);
+    }
   };
 
   const syncSelection = (group: string, value: string): void => {
@@ -221,7 +236,7 @@ export function renderSettingsView(
   const syncMarkers = (group?: string): void => {
     const groups = group
       ? [root.querySelector<HTMLElement>(`[data-group="${group}"]`)]
-      : Array.from(root.querySelectorAll<HTMLElement>('.radio-list'));
+      : Array.from(root.querySelectorAll<HTMLElement>('[data-group]'));
 
     groups.forEach((list) => {
       if (!list) {
@@ -238,14 +253,15 @@ export function renderSettingsView(
     });
   };
 
-  const syncCurrentPlayerSwatch = (): void => {
+  const syncCurrentPlayerBadge = (): void => {
     if (!previewCurrent) {
       return;
     }
 
     const color = draft.playerColor ?? 'blue';
-    previewCurrent.classList.toggle('preview-current__swatch--blue', color === 'blue');
-    previewCurrent.classList.toggle('preview-current__swatch--orange', color === 'orange');
+    previewCurrent.classList.toggle('preview-current__badge--blue', color === 'blue');
+    previewCurrent.classList.toggle('preview-current__badge--orange', color === 'orange');
+    previewCurrent.innerHTML = pawnIcon('white', 14);
   };
 
   const applyThemePreview = (themeId: ThemeId, options: { hover?: boolean } = {}): void => {
@@ -256,6 +272,11 @@ export function renderSettingsView(
       screen.style.setProperty('--preview-board', activeTheme.boardBackground);
       screen.style.setProperty('--preview-header', activeTheme.headerBackground);
       screen.style.setProperty('--preview-text', activeTheme.textOnBoard);
+      screen.style.setProperty('--preview-accent', activeTheme.accent);
+      screen.classList.toggle(
+        'screen--settings-light',
+        themeId === 'da' || themeId === 'food' || themeId === 'gaming',
+      );
     }
 
     if (previewBackMotif) {
@@ -276,8 +297,13 @@ export function renderSettingsView(
     syncMarkers('theme');
   };
 
-  applyThemePreview(draft.themeId ?? PREVIEW_FALLBACK_THEME);
-  syncCurrentPlayerSwatch();
+  root.querySelector('.settings-options')?.addEventListener('submit', (event) => {
+    event.preventDefault();
+  });
+
+  applyThemePreview(PREVIEW_FALLBACK_THEME);
+  syncCurrentPlayerBadge();
+  syncSummary();
   syncStartButton();
   syncMarkers();
 
@@ -302,7 +328,8 @@ export function renderSettingsView(
       const playerColor = input.value as PlayerColor;
       draft = { ...draft, playerColor };
       syncSelection('player', playerColor);
-      syncCurrentPlayerSwatch();
+      syncCurrentPlayerBadge();
+      syncSummary();
       syncStartButton();
     });
   });
@@ -312,6 +339,7 @@ export function renderSettingsView(
       const gridSize = input.value as GridSize;
       draft = { ...draft, gridSize };
       syncSelection('grid', gridSize);
+      syncSummary();
       syncStartButton();
     });
   });
@@ -322,6 +350,7 @@ export function renderSettingsView(
       draft = { ...draft, themeId };
       syncSelection('theme', themeId);
       applyThemePreview(themeId);
+      syncSummary();
       syncStartButton();
     });
   });
@@ -341,7 +370,7 @@ export function renderSettingsView(
 
   root.querySelectorAll<HTMLElement>('[data-group="player"] .radio-option, [data-group="grid"] .radio-option').forEach((option) => {
     option.addEventListener('mouseenter', () => {
-      const list = option.closest('.radio-list');
+      const list = option.closest('[data-group]');
       list?.querySelectorAll('.radio-option').forEach((entry) => {
         entry.classList.toggle('is-hovered', entry === option);
       });
@@ -349,7 +378,7 @@ export function renderSettingsView(
     });
 
     option.addEventListener('mouseleave', () => {
-      const list = option.closest('.radio-list');
+      const list = option.closest('[data-group]');
       list?.querySelectorAll('.radio-option').forEach((entry) => {
         entry.classList.remove('is-hovered');
       });

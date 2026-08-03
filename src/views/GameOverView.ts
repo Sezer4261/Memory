@@ -39,25 +39,23 @@ export function renderGameOverView(
         aria-label="Spielende"
         style="--board-bg: ${theme.boardBackground}; --theme-accent: ${theme.accent}; --board-text: ${theme.textOnBoard}"
       >
-        <div class="content-frame">
-          <div class="gameover-panel gameover-anim">
-            <h1 class="gameover-title gameover-anim__item gameover-anim__item--1">Game over</h1>
-            <p class="gameover-subtitle gameover-anim__item gameover-anim__item--2">Final score</p>
-            <div class="gameover-scores gameover-anim__item gameover-anim__item--3" aria-label="Endstand">
-              ${snapshot.players
-                .map(
-                  (player) => `
-                    <div class="gameover-score gameover-score--${player.color}">
-                      ${pawnIcon(player.color, 34)}
-                      <span class="gameover-score__value">${String(player.score).padStart(2, '0')}</span>
-                    </div>
-                  `,
-                )
-                .join('')}
-            </div>
-            <p class="gameover-hint gameover-anim__item gameover-anim__item--4">Weiter geht's automatisch…</p>
-          </div>
-        </div>
+        <main class="gameover-panel gameover-anim">
+          <h1 class="gameover-title gameover-anim__item gameover-anim__item--1">Game over</h1>
+          <p class="gameover-subtitle gameover-anim__item gameover-anim__item--2">Final score</p>
+          <ul class="gameover-scores gameover-anim__item gameover-anim__item--3" aria-label="Endstand">
+            ${snapshot.players
+              .map(
+                (player) => `
+                  <li class="gameover-score gameover-score--${player.color}">
+                    ${pawnIcon(player.color, 34)}
+                    <span class="gameover-score__value">${String(player.score).padStart(2, '0')}</span>
+                  </li>
+                `,
+              )
+              .join('')}
+          </ul>
+          <p class="gameover-hint gameover-anim__item gameover-anim__item--4">Weiter geht's automatisch…</p>
+        </main>
       </section>
     `;
 
@@ -75,17 +73,15 @@ export function renderGameOverView(
         aria-label="Unentschieden"
         style="--board-bg: ${theme.boardBackground}; --theme-accent: ${theme.accent}; --board-text: ${theme.textOnBoard}"
       >
-        <div class="content-frame">
-          <div class="result-panel result-anim">
-            <h1 class="result-title result-anim__item result-anim__item--1">It's a DRAW</h1>
-            <div class="result-icon result-icon--draw result-anim__item result-anim__item--2">${scalesIcon()}</div>
-            <button type="button" class="btn btn--yellow btn--pulse result-anim__item result-anim__item--3" data-action="replay">
-              <span class="btn__icon">${playIcon()}</span>
-              <span>NEW GAME</span>
-            </button>
-            <button type="button" class="btn btn--text result-anim__item result-anim__item--4" data-action="home">Home</button>
-          </div>
-        </div>
+        <main class="result-panel result-anim">
+          <h1 class="result-title result-anim__item result-anim__item--1">It's a DRAW</h1>
+          <p class="result-icon result-icon--draw result-anim__item result-anim__item--2">${scalesIcon()}</p>
+          <button type="button" class="btn btn--yellow btn--pulse result-anim__item result-anim__item--3" data-action="replay">
+            <span class="btn__icon">${playIcon()}</span>
+            <span>NEW GAME</span>
+          </button>
+          <button type="button" class="btn btn--text result-anim__item result-anim__item--4" data-action="home">Home</button>
+        </main>
       </section>
     `;
   } else {
@@ -101,7 +97,7 @@ export function renderGameOverView(
         }"
       >
         ${confettiStrip()}
-        <div class="confetti-burst" aria-hidden="true">
+        <span class="confetti-burst" aria-hidden="true">
           ${Array.from({ length: 24 }, (_, index) => {
             const colors = ['#ef4444', '#fbbf24', '#22d3ee', '#3b82f6', '#a3e635', '#f472b6'];
             const color = colors[index % colors.length];
@@ -110,19 +106,17 @@ export function renderGameOverView(
             const duration = 1.4 + (index % 5) * 0.15;
             return `<span class="confetti-burst__piece" style="left:${left}%;background:${color};animation-delay:${delay}s;animation-duration:${duration}s"></span>`;
           }).join('')}
-        </div>
-        <div class="content-frame">
-          <div class="result-panel result-anim">
-            <p class="result-eyebrow result-anim__item result-anim__item--1">The winner is</p>
-            <h1 class="result-winner result-anim__item result-anim__item--2">${winnerLabel}</h1>
-            <div class="result-icon result-anim__item result-anim__item--3">${largePawnIcon(winner.color)}</div>
-            <button type="button" class="btn btn--yellow btn--pulse result-anim__item result-anim__item--4" data-action="replay">
-              <span class="btn__icon">${playIcon()}</span>
-              <span>PLAY AGAIN</span>
-            </button>
-            <button type="button" class="btn btn--text result-anim__item result-anim__item--5" data-action="home">Home</button>
-          </div>
-        </div>
+        </span>
+        <main class="result-panel result-anim">
+          <p class="result-eyebrow result-anim__item result-anim__item--1">The winner is</p>
+          <h1 class="result-winner result-anim__item result-anim__item--2">${winnerLabel}</h1>
+          <p class="result-icon result-anim__item result-anim__item--3">${largePawnIcon(winner.color)}</p>
+          <button type="button" class="btn btn--yellow btn--pulse result-anim__item result-anim__item--4" data-action="replay">
+            <span class="btn__icon">${playIcon()}</span>
+            <span>PLAY AGAIN</span>
+          </button>
+          <button type="button" class="btn btn--text result-anim__item result-anim__item--5" data-action="home">Home</button>
+        </main>
       </section>
     `;
   }

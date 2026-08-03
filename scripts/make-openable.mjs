@@ -9,6 +9,8 @@ const builtApp = path.resolve(distDir, 'app.html');
 const openableIndex = path.resolve(projectRoot, 'index.html');
 const openableAssets = path.resolve(projectRoot, 'assets');
 const distAssets = path.resolve(distDir, 'assets');
+const faviconSrc = path.resolve(distDir, 'favicon.svg');
+const faviconDest = path.resolve(projectRoot, 'favicon.svg');
 
 if (!existsSync(builtApp)) {
   console.error('Build-Datei dist/app.html wurde nicht gefunden.');
@@ -32,4 +34,8 @@ if (existsSync(distAssets)) {
   cpSync(distAssets, openableAssets, { recursive: true });
 }
 
-console.log('index.html + assets/ aktualisiert – Doppelklick startet das Spiel.');
+if (existsSync(faviconSrc)) {
+  cpSync(faviconSrc, faviconDest);
+}
+
+console.log('index.html + assets/ + favicon aktualisiert – Doppelklick startet das Spiel.');

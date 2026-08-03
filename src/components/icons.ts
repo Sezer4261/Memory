@@ -154,5 +154,5 @@ export function confettiStrip(): string {
     return `<span class="confetti-piece" style="left:${left}%;top:${top}px;background:${color};transform:rotate(${rotate}deg)"></span>`;
   }).join('');
 
-  return `<div class="confetti-strip" aria-hidden="true">${pieces}</div>`;
+  return `<span class="confetti-strip" aria-hidden="true">${pieces}</span>`;
 }
