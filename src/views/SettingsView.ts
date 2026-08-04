@@ -49,7 +49,7 @@ export function renderSettingsView(
     <section
       class="screen screen--settings"
       aria-label="Spieleinstellungen"
-      style="--preview-back: ${previewTheme.cardBackGradient}; --preview-board: ${previewTheme.boardBackground}; --preview-header: ${previewTheme.headerBackground}; --preview-text: ${previewTheme.textOnBoard}; --preview-accent: ${previewTheme.accent}"
+      style="--preview-back: ${previewTheme.cardBackGradient}; --preview-front: ${previewTheme.cardFront ?? '#ffffff'}; --preview-board: ${previewTheme.boardBackground}; --preview-header: ${previewTheme.headerBackground}; --preview-text: ${previewTheme.textOnBoard}; --preview-accent: ${previewTheme.accent}; --preview-motif-size: ${previewTheme.motifSize ?? '58%'}"
     >
       <article
         class="settings-modal settings-modal--enter"
@@ -144,10 +144,10 @@ export function renderSettingsView(
               </header>
               <section class="preview-cards" aria-hidden="true">
                 <article class="preview-card preview-card--back">
-                  <span data-preview-back-motif>${renderMotif(previewTheme.motifs[1] ?? 'typescript')}</span>
+                  <span data-preview-back-motif>${renderMotif(previewTheme.cardBackMotif ?? previewTheme.motifs[1] ?? 'typescript')}</span>
                 </article>
                 <article class="preview-card preview-card--front">
-                  <span data-preview-motif>${renderMotif(previewTheme.motifs[0] ?? 'git')}</span>
+                  <span data-preview-motif>${renderMotif('angular')}</span>
                 </article>
               </section>
             </figure>
@@ -270,29 +270,41 @@ export function renderSettingsView(
     previewCurrent.innerHTML = pawnIcon('white', 14);
   };
 
+  const PREVIEW_MOTIF: Record<ThemeId, string> = {
+    code: 'angular',
+    gaming: 'rubiks',
+    da: 'da_wave',
+    food: 'burger',
+  };
+
   const applyThemePreview = (themeId: ThemeId, options: { hover?: boolean } = {}): void => {
     const activeTheme = THEMES[themeId];
+    const exitFilled = themeId !== 'code';
 
     if (screen) {
       screen.style.setProperty('--preview-back', activeTheme.cardBackGradient);
+      screen.style.setProperty('--preview-front', activeTheme.cardFront ?? '#ffffff');
       screen.style.setProperty('--preview-board', activeTheme.boardBackground);
       screen.style.setProperty('--preview-header', activeTheme.headerBackground);
       screen.style.setProperty('--preview-text', activeTheme.textOnBoard);
       screen.style.setProperty('--preview-accent', activeTheme.accent);
+      screen.style.setProperty('--preview-motif-size', activeTheme.motifSize ?? '62%');
+      screen.style.setProperty('--preview-exit-bg', exitFilled ? activeTheme.accent : '#2f2f2f');
+      screen.style.setProperty('--preview-exit-fg', '#ffffff');
       screen.classList.toggle(
         'screen--settings-light',
-        themeId === 'da' || themeId === 'food' || themeId === 'gaming',
+        themeId === 'da' || themeId === 'food',
       );
     }
 
     if (previewBackMotif) {
       previewBackMotif.innerHTML = renderMotif(
-        activeTheme.motifs[1] ?? activeTheme.motifs[0] ?? 'typescript',
+        activeTheme.cardBackMotif ?? activeTheme.motifs[1] ?? activeTheme.motifs[0] ?? 'typescript',
       );
     }
 
     if (previewMotif) {
-      previewMotif.innerHTML = renderMotif(activeTheme.motifs[0] ?? 'git');
+      previewMotif.innerHTML = renderMotif(PREVIEW_MOTIF[themeId] ?? activeTheme.motifs[0] ?? 'git');
     }
 
     root.querySelectorAll<HTMLElement>('[data-theme-option]').forEach((option) => {

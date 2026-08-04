@@ -1,9 +1,12 @@
 /* ---------- Game ---------- */
 
 .screen--game {
-  --card-radius: 12px;
-  --card-gap: 0.65rem;
-  --game-pad: 0.75rem;
+  --card-radius: 10px;
+  --card-gap: 0.55rem;
+  --game-pad: 0.85rem;
+  --header-h: clamp(3.4rem, 8.2vh, 4.5rem);
+  --board-max: 720px;
+  --board-chrome: calc(var(--header-h) + var(--game-pad) * 2 + 1.25rem);
   background: var(--board-bg, #243b4a);
   color: var(--board-text, #f8fafc);
   display: grid;
@@ -26,27 +29,30 @@
 }
 
 .screen--game-light .game-header {
-  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.08);
 }
 
 .game-header {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
-  gap: 0.75rem;
-  width: min(100%, var(--frame-max));
-  padding: 0.55rem 0.85rem;
-  border-radius: 14px;
+  gap: 0.65rem;
+  width: min(100%, calc(var(--board-max) + 20rem));
+  min-height: var(--header-h);
+  height: var(--header-h);
+  padding: 0.4rem 0.75rem;
+  border-radius: 12px;
   background: var(--header-bg, rgba(45, 40, 70, 0.55));
-  backdrop-filter: blur(8px);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.16);
+  backdrop-filter: none;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.14);
   min-width: 0;
+  box-sizing: border-box;
 }
 
 .scoreboard {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.4rem;
   width: fit-content;
   max-width: 100%;
   margin: 0;
@@ -59,26 +65,26 @@
 .scoreboard__item {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: 0.28rem;
   line-height: 1;
-  padding: 0.3rem 0.65rem;
-  border-radius: 10px;
+  padding: 0.28rem 0.55rem;
+  border-radius: 8px;
   background: #fff;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.14);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
 }
 
 .scoreboard__item .pawn-icon {
   display: block;
   flex-shrink: 0;
-  width: clamp(18px, 4.5vw, 26px);
-  height: clamp(18px, 4.5vw, 26px);
+  width: clamp(18px, 3.6vw, 24px);
+  height: clamp(18px, 3.6vw, 24px);
 }
 
 .scoreboard__score {
   font-family: var(--font-ui);
-  font-size: clamp(1rem, 3vw, 1.35rem);
+  font-size: clamp(1rem, 2.3vw, 1.2rem);
   font-weight: 700;
-  min-width: 1.1rem;
+  min-width: 0.95rem;
   font-variant-numeric: tabular-nums;
 }
 
@@ -96,7 +102,7 @@
   justify-content: center;
   gap: 0.4rem;
   margin: 0;
-  font-size: clamp(0.85rem, 2.4vw, 1.05rem);
+  font-size: clamp(0.92rem, 2.1vw, 1.1rem);
   font-weight: 600;
   white-space: nowrap;
   min-width: 0;
@@ -105,9 +111,9 @@
 .current-player__badge {
   display: inline-grid;
   place-items: center;
-  width: 1.9rem;
-  height: 1.9rem;
-  border-radius: 7px;
+  width: 1.55rem;
+  height: 1.55rem;
+  border-radius: 6px;
   background: rgba(255, 255, 255, 0.85);
   border: 1px solid rgba(0, 0, 0, 0.08);
   flex-shrink: 0;
@@ -124,36 +130,48 @@
 }
 
 .current-player__badge .pawn-icon {
-  width: 18px;
-  height: 18px;
+  width: 14px;
+  height: 14px;
 }
 
 .game-header .btn--exit {
   justify-self: end;
-  background: var(--theme-accent);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--exit-bg, #2f2f2f);
   border: 1.5px solid var(--theme-accent);
-  color: #fff;
+  color: var(--exit-fg, #f3f4f6);
   box-shadow: none;
-  border-radius: 10px;
-  min-height: 2.35rem;
+  border-radius: 9px;
+  min-height: 2.45rem;
+  height: 2.45rem;
   padding-inline: 0.85rem;
+  font-size: clamp(0.88rem, 2vw, 1rem);
+  font-weight: 600;
+}
+
+.game-header .btn--exit svg {
+  width: 16px;
+  height: 16px;
 }
 
 .game-header .btn--exit:hover {
   filter: brightness(1.08);
-  background: var(--theme-accent);
-  color: #fff;
+  background: var(--exit-bg, #2f2f2f);
+  color: var(--exit-fg, #fff);
 }
 
 .screen--game-light .game-header .btn--exit {
-  background: var(--theme-accent);
+  background: var(--exit-bg, #2f2f2f);
   border-color: var(--theme-accent);
-  color: #fff;
+  color: var(--exit-fg, #f3f4f6);
 }
 
 .screen--game-light .game-header .btn--exit:hover {
   filter: brightness(1.06);
-  color: #fff;
+  background: var(--exit-bg, #2f2f2f);
+  color: var(--exit-fg, #fff);
 }
 
 .card-grid {
@@ -165,9 +183,9 @@
   box-sizing: border-box;
   place-self: center;
   aspect-ratio: var(--columns, 6) / var(--rows, 6);
-  width: min(92%, calc((100dvh - 9.5rem) * var(--columns, 6) / var(--rows, 6)));
-  max-width: min(920px, 100%);
-  max-height: calc(100dvh - 9.5rem);
+  width: min(82%, calc((100dvh - var(--board-chrome)) * var(--columns, 6) / var(--rows, 6)));
+  max-width: min(var(--board-max), 100%);
+  max-height: calc(100dvh - var(--board-chrome));
   height: auto;
   min-width: 0;
   min-height: 0;
@@ -216,26 +234,40 @@
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.28) inset,
     0 -2px 0 rgba(0, 0, 0, 0.12) inset,
-    0 8px 18px rgba(0, 0, 0, 0.22);
+    0 6px 14px rgba(0, 0, 0, 0.2);
 }
 
 .memory-card__face--back {
   background: var(--card-back);
 }
 
+.memory-card__back-motif {
+  display: grid;
+  place-items: center;
+  width: min(48%, 2.85rem);
+  height: min(48%, 2.85rem);
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+.memory-card__back-motif .motif-svg {
+  width: 100%;
+  height: 100%;
+}
+
 .memory-card__face--front {
-  background: #fff;
+  background: var(--card-front, #fff);
   transform: rotateY(180deg);
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.9) inset,
-    0 8px 18px rgba(0, 0, 0, 0.18);
+    0 6px 14px rgba(0, 0, 0, 0.16);
 }
 
 .memory-card__motif {
   display: grid;
   place-items: center;
-  width: min(68%, 4.25rem);
-  height: min(68%, 4.25rem);
+  width: min(var(--motif-size, 70%), 5.5rem);
+  height: min(var(--motif-size, 70%), 5.5rem);
   font-size: clamp(0.85rem, 4.2vmin, 2.1rem);
   line-height: 0;
   user-select: none;
@@ -269,7 +301,7 @@
 .memory-card.is-matched .memory-card__face--front {
   box-shadow:
     0 0 0 2px var(--theme-accent),
-    0 8px 18px rgba(0, 0, 0, 0.18);
+    0 6px 14px rgba(0, 0, 0, 0.16);
 }
 
 .memory-card.is-matched {

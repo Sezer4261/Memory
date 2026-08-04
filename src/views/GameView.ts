@@ -46,12 +46,8 @@ function mountGameView(
 ): void {
   const theme = THEMES[settings.themeId];
   const currentPlayer = snapshot.players[snapshot.currentPlayerIndex];
-  const isLightBoard =
-    theme.id === 'da' ||
-    theme.id === 'food' ||
-    theme.id === 'gaming' ||
-    theme.boardBackground.startsWith('#e') ||
-    theme.boardBackground.startsWith('#f');
+  const isLightBoard = theme.id === 'da' || theme.id === 'food';
+  const exitFilled = theme.id !== 'code';
 
   root.innerHTML = `
     <section
@@ -64,8 +60,12 @@ function mountGameView(
         --shell-bg: ${theme.shellBackground};
         --header-bg: ${theme.headerBackground};
         --card-back: ${theme.cardBackGradient};
+        --card-front: ${theme.cardFront ?? '#ffffff'};
+        --motif-size: ${theme.motifSize ?? '70%'};
         --theme-accent: ${theme.accent};
         --board-text: ${theme.textOnBoard};
+        --exit-bg: ${exitFilled ? theme.accent : '#2f2f2f'};
+        --exit-fg: #ffffff;
       "
     >
       <header class="game-header">
@@ -101,7 +101,13 @@ function mountGameView(
                 aria-label="Karte ${card.id + 1}"
               >
                 <span class="memory-card__inner">
-                  <span class="memory-card__face memory-card__face--back"></span>
+                  <span class="memory-card__face memory-card__face--back">
+                    ${
+                      theme.cardBackMotif
+                        ? `<span class="memory-card__back-motif">${renderMotif(theme.cardBackMotif)}</span>`
+                        : ''
+                    }
+                  </span>
                   <span class="memory-card__face memory-card__face--front">
                     <span class="memory-card__motif">${renderMotif(card.motif)}</span>
                   </span>
@@ -137,8 +143,14 @@ function syncGameView(
   screen.style.setProperty('--shell-bg', theme.shellBackground);
   screen.style.setProperty('--header-bg', theme.headerBackground);
   screen.style.setProperty('--card-back', theme.cardBackGradient);
+  screen.style.setProperty('--card-front', theme.cardFront ?? '#ffffff');
+  screen.style.setProperty('--motif-size', theme.motifSize ?? '70%');
   screen.style.setProperty('--theme-accent', theme.accent);
   screen.style.setProperty('--board-text', theme.textOnBoard);
+  const exitFilled = theme.id !== 'code';
+  screen.style.setProperty('--exit-bg', exitFilled ? theme.accent : '#2f2f2f');
+  screen.style.setProperty('--exit-fg', '#ffffff');
+  screen.classList.toggle('screen--game-light', theme.id === 'da' || theme.id === 'food');
 
   const scoreboard = screen.querySelector<HTMLElement>('[data-scoreboard]');
   if (scoreboard) {
@@ -180,7 +192,7 @@ function renderScoreboard(snapshot: GameSnapshot): string {
     .map(
       (player) => `
         <li class="scoreboard__item scoreboard__item--${player.color}">
-          ${pawnIcon(player.color, 28)}
+          ${pawnIcon(player.color, 22)}
           <span class="scoreboard__score">${player.score}</span>
         </li>
       `,
@@ -192,7 +204,7 @@ function renderCurrentPlayer(color: 'blue' | 'orange'): string {
   return `
     <span>Current player:</span>
     <span class="current-player__badge current-player__badge--${color}">
-      ${pawnIcon('white', 22)}
+      ${pawnIcon('white', 16)}
     </span>
   `;
 }

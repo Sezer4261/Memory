@@ -28,6 +28,7 @@ export default defineConfig({
     outDir: 'dist',
     assetsDir: 'assets',
     cssCodeSplit: false,
+    cssMinify: false,
     modulePreload: false,
     sourcemap: true,
     rollupOptions: {

@@ -14,13 +14,36 @@ export function pawnIcon(color: PlayerColor | 'white', size = 28): string {
 }
 
 /** Large winner pawn for the game-over screen. */
-export function largePawnIcon(color: PlayerColor): string {
+export function largePawnIcon(color: PlayerColor, outlined = false): string {
   const fill = color === 'orange' ? '#ff9800' : '#4fc3f7';
+
+  if (outlined) {
+    return `
+      <svg class="winner-pawn winner-pawn--outline" viewBox="0 0 120 160" aria-hidden="true" fill="none">
+        <circle cx="60" cy="36" r="26" stroke="${fill}" stroke-width="8"/>
+        <path d="M28 146c5-36 20-56 32-56s27 20 32 56" stroke="${fill}" stroke-width="8" stroke-linecap="round"/>
+      </svg>
+    `;
+  }
 
   return `
     <svg class="winner-pawn" viewBox="0 0 120 160" aria-hidden="true">
       <circle cx="60" cy="36" r="28" fill="${fill}"/>
       <path d="M24 148c6-40 22-62 36-62s30 22 36 62z" fill="${fill}"/>
+    </svg>
+  `;
+}
+
+/** Golden trophy for the gaming winner screen. */
+export function trophyIcon(): string {
+  return `
+    <svg class="winner-trophy" viewBox="0 0 120 140" aria-hidden="true">
+      <path fill="#F59E0B" d="M34 18h52v28c0 22-14 38-26 38S34 68 34 46V18z"/>
+      <path fill="#D97706" d="M26 22h12v18c-8 0-14-6-14-14 0-3 1-4 2-4zm56 0h12c1 0 2 1 2 4 0 8-6 14-14 14V22z"/>
+      <path fill="#FBBF24" d="M40 18h40v10H40z"/>
+      <rect x="52" y="84" width="16" height="22" rx="2" fill="#B45309"/>
+      <path fill="#FBBF24" d="M36 106h48l-6 18H42z"/>
+      <circle cx="60" cy="48" r="8" fill="#FDE68A"/>
     </svg>
   `;
 }
@@ -103,12 +126,16 @@ export function exitIcon(): string {
 }
 
 /** Balance scales for draw results. */
-export function scalesIcon(): string {
+export function scalesIcon(outlined = false): string {
+  const stroke = outlined ? 'currentColor' : 'none';
+  const fill = outlined ? 'none' : 'currentColor';
+  const width = outlined ? '7' : '0';
+
   return `
-    <svg class="draw-scales" viewBox="0 0 120 100" aria-hidden="true">
-      <path d="M60 12v70M40 82h40" stroke="currentColor" stroke-width="6" stroke-linecap="round"/>
-      <path d="M20 28h80" stroke="currentColor" stroke-width="6" stroke-linecap="round"/>
-      <path d="M28 28l-14 28h28zM92 28l-14 28h28z" fill="currentColor" opacity="0.85"/>
+    <svg class="draw-scales ${outlined ? 'draw-scales--outline' : ''}" viewBox="0 0 120 100" aria-hidden="true">
+      <path d="M60 12v70M40 82h40" stroke="currentColor" stroke-width="6" stroke-linecap="round" fill="none"/>
+      <path d="M20 28h80" stroke="currentColor" stroke-width="6" stroke-linecap="round" fill="none"/>
+      <path d="M28 28l-14 28h28zM92 28l-14 28h28z" fill="${fill}" stroke="${stroke}" stroke-width="${width}" stroke-linejoin="round"/>
     </svg>
   `;
 }
@@ -117,28 +144,27 @@ export function scalesIcon(): string {
 export function settingsSectionIcon(kind: 'player' | 'board' | 'theme'): string {
   if (kind === 'player') {
     return `
-      <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
-        <circle cx="12" cy="8" r="4" fill="#14b8a6"/>
-        <path d="M4 20c1.5-4 4-6 8-6s6.5 2 8 6" fill="#14b8a6"/>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="12" cy="8" r="3.25" stroke="#14b8a6" stroke-width="2"/>
+        <path d="M5.5 19.5c1.2-3.4 3.6-5 6.5-5s5.3 1.6 6.5 5" stroke="#14b8a6" stroke-width="2" stroke-linecap="round"/>
       </svg>
     `;
   }
 
   if (kind === 'board') {
     return `
-      <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
-        <rect x="3" y="5" width="10" height="14" rx="2" fill="#3b82f6"/>
-        <rect x="11" y="3" width="10" height="14" rx="2" fill="#60a5fa"/>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="3.5" y="3.5" width="17" height="17" rx="2.5" stroke="#3b82f6" stroke-width="2"/>
+        <path d="M12 4v16M4 12h16" stroke="#3b82f6" stroke-width="2"/>
       </svg>
     `;
   }
 
   return `
-    <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
-      <circle cx="12" cy="12" r="9" fill="#a855f7"/>
-      <circle cx="8" cy="10" r="2" fill="#f9a8d4"/>
-      <circle cx="14" cy="8" r="2" fill="#c4b5fd"/>
-      <circle cx="15" cy="14" r="2" fill="#ddd6fe"/>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="12" cy="12" r="8.25" stroke="#ec4899" stroke-width="2"/>
+      <circle cx="12" cy="12" r="3" stroke="#ec4899" stroke-width="2"/>
+      <path d="M12 3.75v2.5M12 17.75v2.5M3.75 12h2.5M17.75 12h2.5" stroke="#ec4899" stroke-width="2" stroke-linecap="round"/>
     </svg>
   `;
 }

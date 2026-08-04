@@ -23,6 +23,12 @@ export interface ThemeDefinition {
   shellBackground: string;
   textOnBoard: string;
   motifs: string[];
+  /** Optional motif key rendered on the card back. */
+  cardBackMotif?: string;
+  /** Front face fill; defaults to white. */
+  cardFront?: string;
+  /** Motif size as CSS percentage of the card face (e.g. "76%"). */
+  motifSize?: string;
 }
 
 export interface GameSettings {
