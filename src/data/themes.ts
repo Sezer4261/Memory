@@ -14,6 +14,7 @@ export const GRID_LABELS: Record<GridSize, string> = {
 
 /**
  * Four layouts / themes – colors match the design sheet.
+ * motifPosition / backMotifPosition optically center sheet crops on the cards.
  */
 export const THEMES: Record<ThemeId, ThemeDefinition> = {
   code: {
@@ -22,13 +23,15 @@ export const THEMES: Record<ThemeId, ThemeDefinition> = {
     shortLabel: 'Code vibes',
     description: 'Tech-Logos auf dunklem Board – Git, JS, TS & Co.',
     cardBack: '#14b8a6',
-    cardBackGradient: 'linear-gradient(180deg, #5eead4 0%, #2dd4bf 48%, #0f766e 100%)',
+    cardBackGradient: 'linear-gradient(180deg, #5eead4 0%, #2dd4bf 45%, #0d9488 100%)',
     accent: '#14b8a6',
     boardBackground: '#2b2b2b',
     headerBackground: '#1f1f1f',
     shellBackground: 'transparent',
     textOnBoard: '#f8fafc',
+    cardFront: '#f3f4f6',
     cardBackMotif: 'code_back',
+    motifSize: '100%',
     motifs: [
       'git',
       'typescript',
@@ -55,17 +58,19 @@ export const THEMES: Record<ThemeId, ThemeDefinition> = {
     label: 'Gaming theme',
     shortLabel: 'Gaming',
     description: 'Gaming-Ikonen: Squid Game, Minecraft, Pac-Man & Co.',
-    cardBack: '#db2777',
-    cardBackGradient: 'linear-gradient(180deg, #f472b6 0%, #ec4899 40%, #be185d 100%)',
+    cardBack: '#ec4899',
+    cardBackGradient: 'linear-gradient(180deg, #f472b6 0%, #db2777 42%, #6b21a8 100%)',
     accent: '#ec4899',
     boardBackground: '#4a6d82',
     headerBackground: '#5c2a4a',
     shellBackground: 'transparent',
     textOnBoard: '#f8fafc',
+    cardFront: '#f3f4f6',
     cardBackMotif: 'gaming_back',
+    motifSize: '100%',
     motifs: [
-      'squid_square',
       'squid_circle',
+      'squid_square',
       'squid_triangle',
       'geo_pattern',
       'creeper',
@@ -89,13 +94,15 @@ export const THEMES: Record<ThemeId, ThemeDefinition> = {
     label: 'DA Projects theme',
     shortLabel: 'DA Projects',
     description: 'DA-Projektlogos auf hellem Board.',
-    cardBack: '#2563eb',
-    cardBackGradient: 'linear-gradient(180deg, #3b82f6 0%, #2563eb 45%, #1e40af 100%)',
+    cardBack: '#1d6b7a',
+    cardBackGradient: 'linear-gradient(180deg, #2a8596 0%, #1d6b7a 55%, #155e6b 100%)',
     accent: '#60a5fa',
     boardBackground: '#e3f2f7',
     headerBackground: '#d7e8f0',
     shellBackground: 'transparent',
     textOnBoard: '#1e293b',
+    cardFront: '#eef2f4',
+    motifSize: '100%',
     cardBackMotif: 'da_back',
     motifs: [
       'da_ramen',
@@ -124,14 +131,14 @@ export const THEMES: Record<ThemeId, ThemeDefinition> = {
     shortLabel: 'Foods',
     description: 'Food-Illustrationen: Pizza, Sushi, Fries & mehr.',
     cardBack: '#ff8c32',
-    cardBackGradient: 'linear-gradient(180deg, #ffb06a 0%, #ff8c32 50%, #e67e22 100%)',
+    cardBackGradient: 'linear-gradient(180deg, #ffb347 0%, #ff8c32 45%, #e67e22 100%)',
     accent: '#ff8c32',
     boardBackground: '#f5efe6',
     headerBackground: '#e6d5bc',
     shellBackground: 'transparent',
     textOnBoard: '#3f2a1d',
     cardFront: '#f5f1ee',
-    motifSize: '76%',
+    motifSize: '100%',
     cardBackMotif: 'food_back',
     motifs: [
       'fries',

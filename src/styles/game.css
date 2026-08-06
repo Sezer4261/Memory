@@ -226,11 +226,11 @@
 .memory-card__face {
   position: absolute;
   inset: 0;
-  display: grid;
-  place-items: center;
+  display: block;
   border-radius: inherit;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+  overflow: hidden;
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.28) inset,
     0 -2px 0 rgba(0, 0, 0, 0.12) inset,
@@ -238,64 +238,31 @@
 }
 
 .memory-card__face--back {
-  background: var(--card-back);
+  background-color: transparent;
+  background-image: var(--card-back);
+  background-size: 100% 100%;
+  background-position: center center;
+  background-repeat: no-repeat;
 }
 
-.memory-card__back-motif {
-  display: grid;
-  place-items: center;
-  width: min(48%, 2.85rem);
-  height: min(48%, 2.85rem);
-  opacity: 0.85;
-  pointer-events: none;
-}
-
-.memory-card__back-motif .motif-svg {
-  width: 100%;
-  height: 100%;
+.memory-card__face--back.has-motif {
+  background-size: 100% 100%;
+  background-position: center center;
+  background-repeat: no-repeat;
 }
 
 .memory-card__face--front {
-  background: var(--card-front, #fff);
+  background-color: var(--card-front, #fff);
   transform: rotateY(180deg);
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.9) inset,
     0 6px 14px rgba(0, 0, 0, 0.16);
 }
 
-.memory-card__motif {
-  display: grid;
-  place-items: center;
-  width: min(var(--motif-size, 70%), 5.5rem);
-  height: min(var(--motif-size, 70%), 5.5rem);
-  font-size: clamp(0.85rem, 4.2vmin, 2.1rem);
-  line-height: 0;
-  user-select: none;
-  color: #111827;
-}
-
-.motif-svg {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-
-.preview-card .motif-svg {
-  width: 100%;
-  height: 100%;
-  display: block;
-  margin: 0 auto;
-}
-
-.preview-card--back .motif-svg {
-  width: 100%;
-  height: 100%;
-  opacity: 0.88;
-}
-
-.memory-card__motif .motif-svg {
-  width: 100%;
-  height: 100%;
+.memory-card__face--front.has-motif {
+  background-size: 100% 100%;
+  background-position: center center;
+  background-repeat: no-repeat;
 }
 
 .memory-card.is-matched .memory-card__face--front {

@@ -1,5 +1,5 @@
 import { exitIcon, pawnIcon } from '../components/icons';
-import { renderMotif } from '../data/motifs';
+import { motifFaceStyle } from '../data/motifs';
 import { THEMES } from '../data/themes';
 import type { GameSettings, GameSnapshot } from '../types';
 import { soundEffects } from '../utils/sound';
@@ -61,7 +61,7 @@ function mountGameView(
         --header-bg: ${theme.headerBackground};
         --card-back: ${theme.cardBackGradient};
         --card-front: ${theme.cardFront ?? '#ffffff'};
-        --motif-size: ${theme.motifSize ?? '70%'};
+        --motif-size: ${theme.motifSize ?? '100%'};
         --theme-accent: ${theme.accent};
         --board-text: ${theme.textOnBoard};
         --exit-bg: ${exitFilled ? theme.accent : '#2f2f2f'};
@@ -101,16 +101,14 @@ function mountGameView(
                 aria-label="Karte ${card.id + 1}"
               >
                 <span class="memory-card__inner">
-                  <span class="memory-card__face memory-card__face--back">
-                    ${
-                      theme.cardBackMotif
-                        ? `<span class="memory-card__back-motif">${renderMotif(theme.cardBackMotif)}</span>`
-                        : ''
-                    }
-                  </span>
-                  <span class="memory-card__face memory-card__face--front">
-                    <span class="memory-card__motif">${renderMotif(card.motif)}</span>
-                  </span>
+                  <span
+                    class="memory-card__face memory-card__face--back${theme.cardBackMotif ? ' has-motif' : ''}"
+                    ${theme.cardBackMotif ? `style="${motifFaceStyle(theme.cardBackMotif)}"` : ''}
+                  ></span>
+                  <span
+                    class="memory-card__face memory-card__face--front has-motif"
+                    style="${motifFaceStyle(card.motif)}"
+                  ></span>
                 </span>
               </button>
             `;
@@ -144,7 +142,7 @@ function syncGameView(
   screen.style.setProperty('--header-bg', theme.headerBackground);
   screen.style.setProperty('--card-back', theme.cardBackGradient);
   screen.style.setProperty('--card-front', theme.cardFront ?? '#ffffff');
-  screen.style.setProperty('--motif-size', theme.motifSize ?? '70%');
+  screen.style.setProperty('--motif-size', theme.motifSize ?? '100%');
   screen.style.setProperty('--theme-accent', theme.accent);
   screen.style.setProperty('--board-text', theme.textOnBoard);
   const exitFilled = theme.id !== 'code';

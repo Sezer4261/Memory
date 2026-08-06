@@ -4,7 +4,7 @@ import {
   playIcon,
   settingsSectionIcon,
 } from '../components/icons';
-import { renderMotif } from '../data/motifs';
+import { motifFaceStyle, motifUrl } from '../data/motifs';
 import { GRID_LABELS, THEMES } from '../data/themes';
 import type { GameSettings, GridSize, PlayerColor, ThemeId } from '../types';
 
@@ -49,7 +49,7 @@ export function renderSettingsView(
     <section
       class="screen screen--settings"
       aria-label="Spieleinstellungen"
-      style="--preview-back: ${previewTheme.cardBackGradient}; --preview-front: ${previewTheme.cardFront ?? '#ffffff'}; --preview-board: ${previewTheme.boardBackground}; --preview-header: ${previewTheme.headerBackground}; --preview-text: ${previewTheme.textOnBoard}; --preview-accent: ${previewTheme.accent}; --preview-motif-size: ${previewTheme.motifSize ?? '58%'}"
+      style="--preview-back: ${previewTheme.cardBackGradient}; --preview-front: ${previewTheme.cardFront ?? '#ffffff'}; --preview-board: ${previewTheme.boardBackground}; --preview-header: ${previewTheme.headerBackground}; --preview-text: ${previewTheme.textOnBoard}; --preview-accent: ${previewTheme.accent}; --preview-motif-size: ${previewTheme.motifSize ?? '100%'}; --preview-motif-position: ${previewTheme.motifPosition ?? 'center center'}; --preview-back-motif-position: ${previewTheme.backMotifPosition ?? previewTheme.motifPosition ?? 'center center'}"
     >
       <article
         class="settings-modal settings-modal--enter"
@@ -143,12 +143,16 @@ export function renderSettingsView(
                 </p>
               </header>
               <section class="preview-cards" aria-hidden="true">
-                <article class="preview-card preview-card--back">
-                  <span data-preview-back-motif>${renderMotif(previewTheme.cardBackMotif ?? previewTheme.motifs[1] ?? 'typescript')}</span>
-                </article>
-                <article class="preview-card preview-card--front">
-                  <span data-preview-motif>${renderMotif('angular')}</span>
-                </article>
+                <article
+                  class="preview-card preview-card--back has-motif"
+                  data-preview-back
+                  style="${motifFaceStyle(previewTheme.cardBackMotif ?? 'code_back')}"
+                ></article>
+                <article
+                  class="preview-card preview-card--front has-motif"
+                  data-preview-front
+                  style="${motifFaceStyle('angular')}"
+                ></article>
               </section>
             </figure>
 
@@ -177,8 +181,8 @@ export function renderSettingsView(
   `;
 
   const screen = root.querySelector<HTMLElement>('.screen--settings');
-  const previewMotif = root.querySelector<HTMLElement>('[data-preview-motif]');
-  const previewBackMotif = root.querySelector<HTMLElement>('[data-preview-back-motif]');
+  const previewFront = root.querySelector<HTMLElement>('[data-preview-front]');
+  const previewBack = root.querySelector<HTMLElement>('[data-preview-back]');
   const previewCurrent = root.querySelector<HTMLElement>('[data-preview-current]');
   const playButton = root.querySelector<HTMLButtonElement>('[data-action="play"]');
   const themeList = root.querySelector<HTMLElement>('[data-group="theme"]');
@@ -272,9 +276,9 @@ export function renderSettingsView(
 
   const PREVIEW_MOTIF: Record<ThemeId, string> = {
     code: 'angular',
-    gaming: 'rubiks',
-    da: 'da_wave',
-    food: 'burger',
+    gaming: 'creeper',
+    da: 'da_ramen',
+    food: 'pizza',
   };
 
   const applyThemePreview = (themeId: ThemeId, options: { hover?: boolean } = {}): void => {
@@ -288,7 +292,7 @@ export function renderSettingsView(
       screen.style.setProperty('--preview-header', activeTheme.headerBackground);
       screen.style.setProperty('--preview-text', activeTheme.textOnBoard);
       screen.style.setProperty('--preview-accent', activeTheme.accent);
-      screen.style.setProperty('--preview-motif-size', activeTheme.motifSize ?? '62%');
+      screen.style.setProperty('--preview-motif-size', activeTheme.motifSize ?? '100%');
       screen.style.setProperty('--preview-exit-bg', exitFilled ? activeTheme.accent : '#2f2f2f');
       screen.style.setProperty('--preview-exit-fg', '#ffffff');
       screen.classList.toggle(
@@ -297,14 +301,26 @@ export function renderSettingsView(
       );
     }
 
-    if (previewBackMotif) {
-      previewBackMotif.innerHTML = renderMotif(
-        activeTheme.cardBackMotif ?? activeTheme.motifs[1] ?? activeTheme.motifs[0] ?? 'typescript',
-      );
+    if (previewBack) {
+      const backSrc = activeTheme.cardBackMotif
+        ? motifUrl(activeTheme.cardBackMotif)
+        : undefined;
+      if (backSrc) {
+        previewBack.style.backgroundImage = `url('${backSrc}')`;
+        previewBack.classList.add('has-motif');
+      } else {
+        previewBack.style.backgroundImage = '';
+        previewBack.classList.remove('has-motif');
+      }
     }
 
-    if (previewMotif) {
-      previewMotif.innerHTML = renderMotif(PREVIEW_MOTIF[themeId] ?? activeTheme.motifs[0] ?? 'git');
+    if (previewFront) {
+      const frontKey = PREVIEW_MOTIF[themeId] ?? activeTheme.motifs[0] ?? 'git';
+      const frontSrc = motifUrl(frontKey);
+      if (frontSrc) {
+        previewFront.style.backgroundImage = `url('${frontSrc}')`;
+        previewFront.classList.add('has-motif');
+      }
     }
 
     root.querySelectorAll<HTMLElement>('[data-theme-option]').forEach((option) => {

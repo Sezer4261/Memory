@@ -454,32 +454,31 @@
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.22) inset,
     0 10px 22px rgba(0, 0, 0, 0.32);
-  display: grid;
-  place-items: center;
+  display: block;
   padding: 0;
+  overflow: hidden;
   transition: background 0.25s ease;
 }
 
-.preview-card > [data-preview-motif],
-.preview-card > [data-preview-back-motif] {
-  display: grid;
-  place-items: center;
-  width: var(--preview-motif-size, 58%);
-  height: var(--preview-motif-size, 58%);
-  line-height: 0;
+.preview-card.has-motif {
+  background-size: 100% 100%;
+  background-position: center center;
+  background-repeat: no-repeat;
 }
 
 /* Theme back sits in front; motif card peeks out behind (like the mock). */
 .preview-card--back {
   z-index: 2;
-  background: var(--preview-back);
+  background-color: transparent;
+  background-image: var(--preview-back);
+  background-size: 100% 100%;
   color: rgba(255, 255, 255, 0.92);
   transform: translate(-62%, -46%) rotate(-9deg);
 }
 
 .preview-card--front {
   z-index: 1;
-  background: var(--preview-front, #fff);
+  background-color: var(--preview-front, #fff);
   color: #111827;
   transform: translate(-34%, -54%) rotate(11deg);
 }
