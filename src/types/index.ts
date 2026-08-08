@@ -29,10 +29,10 @@ export interface ThemeDefinition {
   cardFront?: string;
   /** Motif size as CSS percentage of the card face (e.g. "76%"). */
   motifSize?: string;
-  /** object-position for front motifs (optical centering). */
-  motifPosition?: string;
-  /** object-position for back motifs (optical centering). */
-  backMotifPosition?: string;
+  /** Card corner radius (e.g. "10px"). */
+  cardRadius?: string;
+  /** Card aspect ratio (e.g. "1 / 1" or "3 / 4"). */
+  cardAspect?: string;
 }
 
 export interface GameSettings {

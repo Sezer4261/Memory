@@ -4,9 +4,10 @@ import {
   playIcon,
   settingsSectionIcon,
 } from '../components/icons';
-import { motifFaceStyle, motifUrl } from '../data/motifs';
+import { renderMotif } from '../data/motifs';
 import { GRID_LABELS, THEMES } from '../data/themes';
 import type { GameSettings, GridSize, PlayerColor, ThemeId } from '../types';
+import gamingCardsPreview from '../assets/preview/gaming-cards.png';
 
 export interface SettingsViewCallbacks {
   onBack: () => void;
@@ -49,7 +50,7 @@ export function renderSettingsView(
     <section
       class="screen screen--settings"
       aria-label="Spieleinstellungen"
-      style="--preview-back: ${previewTheme.cardBackGradient}; --preview-front: ${previewTheme.cardFront ?? '#ffffff'}; --preview-board: ${previewTheme.boardBackground}; --preview-header: ${previewTheme.headerBackground}; --preview-text: ${previewTheme.textOnBoard}; --preview-accent: ${previewTheme.accent}; --preview-motif-size: ${previewTheme.motifSize ?? '100%'}; --preview-motif-position: ${previewTheme.motifPosition ?? 'center center'}; --preview-back-motif-position: ${previewTheme.backMotifPosition ?? previewTheme.motifPosition ?? 'center center'}"
+      style="--preview-back: ${previewTheme.cardBackGradient}; --preview-front: ${previewTheme.cardFront ?? '#ffffff'}; --preview-board: ${previewTheme.boardBackground}; --preview-header: ${previewTheme.headerBackground}; --preview-text: ${previewTheme.textOnBoard}; --preview-accent: ${previewTheme.accent}; --preview-motif-size: ${previewTheme.motifSize ?? '58%'}; --preview-card-radius: ${previewTheme.cardRadius ?? '10px'}; --preview-card-aspect: ${previewTheme.cardAspect ?? '1 / 1'}"
     >
       <article
         class="settings-modal settings-modal--enter"
@@ -119,16 +120,16 @@ export function renderSettingsView(
           </form>
 
           <aside class="settings-preview settings-anim settings-anim--2" aria-label="Theme-Vorschau">
-            <figure class="settings-preview__stage" data-preview-stage>
+            <figure class="settings-preview__stage" data-preview-stage data-preview-theme="${PREVIEW_FALLBACK_THEME}">
               <header class="preview-game-header">
                 <ul class="preview-scoreboard">
-                  <li class="preview-score-item preview-score-item--blue">
-                    ${pawnIcon('blue', 16)}
-                    <span>0</span>
-                  </li>
                   <li class="preview-score-item preview-score-item--orange">
                     ${pawnIcon('orange', 16)}
-                    <span>0</span>
+                    <span>6</span>
+                  </li>
+                  <li class="preview-score-item preview-score-item--blue">
+                    ${pawnIcon('blue', 16)}
+                    <span>2</span>
                   </li>
                 </ul>
                 <p class="preview-current">
@@ -137,22 +138,30 @@ export function renderSettingsView(
                     ${pawnIcon('white', 14)}
                   </span>
                 </p>
-                <p class="preview-exit">
+                <button type="button" class="preview-exit" tabindex="-1">
                   ${exitIcon()}
                   <span>Exit game</span>
-                </p>
+                </button>
               </header>
-              <section class="preview-cards" aria-hidden="true">
-                <article
-                  class="preview-card preview-card--back has-motif"
-                  data-preview-back
-                  style="${motifFaceStyle(previewTheme.cardBackMotif ?? 'code_back')}"
-                ></article>
-                <article
-                  class="preview-card preview-card--front has-motif"
-                  data-preview-front
-                  style="${motifFaceStyle('angular')}"
-                ></article>
+              <section class="preview-cards" aria-hidden="true" data-preview-cards>
+                <div class="preview-cards__shot-wrap" data-preview-shot hidden>
+                  <img
+                    class="preview-cards__shot"
+                    src="${gamingCardsPreview}"
+                    alt=""
+                    draggable="false"
+                  />
+                </div>
+                <div class="preview-cards__pair" data-preview-pair>
+                  <article class="preview-card preview-card--back">
+                    <span class="preview-card__motif" data-preview-back-motif>${
+                      previewTheme.cardBackMotif ? renderMotif(previewTheme.cardBackMotif) : ''
+                    }</span>
+                  </article>
+                  <article class="preview-card preview-card--front">
+                    <span class="preview-card__motif" data-preview-motif>${renderMotif('git')}</span>
+                  </article>
+                </div>
               </section>
             </figure>
 
@@ -181,8 +190,8 @@ export function renderSettingsView(
   `;
 
   const screen = root.querySelector<HTMLElement>('.screen--settings');
-  const previewFront = root.querySelector<HTMLElement>('[data-preview-front]');
-  const previewBack = root.querySelector<HTMLElement>('[data-preview-back]');
+  const previewMotif = root.querySelector<HTMLElement>('[data-preview-motif]');
+  const previewBackMotif = root.querySelector<HTMLElement>('[data-preview-back-motif]');
   const previewCurrent = root.querySelector<HTMLElement>('[data-preview-current]');
   const playButton = root.querySelector<HTMLButtonElement>('[data-action="play"]');
   const themeList = root.querySelector<HTMLElement>('[data-group="theme"]');
@@ -275,15 +284,19 @@ export function renderSettingsView(
   };
 
   const PREVIEW_MOTIF: Record<ThemeId, string> = {
-    code: 'angular',
-    gaming: 'creeper',
-    da: 'da_ramen',
-    food: 'pizza',
+    code: 'git',
+    gaming: 'rubiks',
+    da: 'da_wave',
+    food: 'wrap',
   };
 
   const applyThemePreview = (themeId: ThemeId, options: { hover?: boolean } = {}): void => {
     const activeTheme = THEMES[themeId];
     const exitFilled = themeId !== 'code';
+    const previewStage = root.querySelector<HTMLElement>('[data-preview-stage]');
+    const previewShot = root.querySelector<HTMLElement>('[data-preview-shot]');
+    const previewPair = root.querySelector<HTMLElement>('[data-preview-pair]');
+    const useShot = themeId === 'gaming';
 
     if (screen) {
       screen.style.setProperty('--preview-back', activeTheme.cardBackGradient);
@@ -292,7 +305,9 @@ export function renderSettingsView(
       screen.style.setProperty('--preview-header', activeTheme.headerBackground);
       screen.style.setProperty('--preview-text', activeTheme.textOnBoard);
       screen.style.setProperty('--preview-accent', activeTheme.accent);
-      screen.style.setProperty('--preview-motif-size', activeTheme.motifSize ?? '100%');
+      screen.style.setProperty('--preview-motif-size', activeTheme.motifSize ?? '58%');
+      screen.style.setProperty('--preview-card-radius', activeTheme.cardRadius ?? '10px');
+      screen.style.setProperty('--preview-card-aspect', activeTheme.cardAspect ?? '1 / 1');
       screen.style.setProperty('--preview-exit-bg', exitFilled ? activeTheme.accent : '#2f2f2f');
       screen.style.setProperty('--preview-exit-fg', '#ffffff');
       screen.classList.toggle(
@@ -301,26 +316,23 @@ export function renderSettingsView(
       );
     }
 
-    if (previewBack) {
-      const backSrc = activeTheme.cardBackMotif
-        ? motifUrl(activeTheme.cardBackMotif)
-        : undefined;
-      if (backSrc) {
-        previewBack.style.backgroundImage = `url('${backSrc}')`;
-        previewBack.classList.add('has-motif');
-      } else {
-        previewBack.style.backgroundImage = '';
-        previewBack.classList.remove('has-motif');
-      }
+    if (previewStage) {
+      previewStage.dataset.previewTheme = themeId;
     }
 
-    if (previewFront) {
-      const frontKey = PREVIEW_MOTIF[themeId] ?? activeTheme.motifs[0] ?? 'git';
-      const frontSrc = motifUrl(frontKey);
-      if (frontSrc) {
-        previewFront.style.backgroundImage = `url('${frontSrc}')`;
-        previewFront.classList.add('has-motif');
-      }
+    if (previewShot && previewPair) {
+      previewShot.hidden = !useShot;
+      previewPair.hidden = useShot;
+    }
+
+    if (previewBackMotif) {
+      previewBackMotif.innerHTML = activeTheme.cardBackMotif
+        ? renderMotif(activeTheme.cardBackMotif)
+        : '';
+    }
+
+    if (previewMotif) {
+      previewMotif.innerHTML = renderMotif(PREVIEW_MOTIF[themeId] ?? activeTheme.motifs[0] ?? 'git');
     }
 
     root.querySelectorAll<HTMLElement>('[data-theme-option]').forEach((option) => {

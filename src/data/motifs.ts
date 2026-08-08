@@ -19,7 +19,6 @@ import react from '../assets/motifs/code/react.png';
 import sass from '../assets/motifs/code/sass.png';
 import database from '../assets/motifs/code/database.png';
 import firebase from '../assets/motifs/code/firebase.png';
-import code_back from '../assets/motifs/code/code_back.png';
 
 import squid_circle from '../assets/motifs/gaming/squid_circle.png';
 import squid_square from '../assets/motifs/gaming/squid_square.png';
@@ -39,7 +38,6 @@ import gameboy from '../assets/motifs/gaming/gameboy.png';
 import puzzle from '../assets/motifs/gaming/puzzle.png';
 import ace_diamonds from '../assets/motifs/gaming/ace_diamonds.png';
 import play_button from '../assets/motifs/gaming/play_button.png';
-import gaming_back from '../assets/motifs/gaming/gaming_back.png';
 
 import da_ramen from '../assets/motifs/da/da_ramen.png';
 import da_soup from '../assets/motifs/da/da_soup.png';
@@ -59,7 +57,6 @@ import da_clover from '../assets/motifs/da/da_clover.png';
 import da_user from '../assets/motifs/da/da_user.png';
 import da_wave from '../assets/motifs/da/da_wave.png';
 import da_exchange from '../assets/motifs/da/da_exchange.png';
-import da_back from '../assets/motifs/da/da_back.png';
 
 import fries from '../assets/motifs/food/fries.png';
 import pizza from '../assets/motifs/food/pizza.png';
@@ -79,7 +76,6 @@ import taco from '../assets/motifs/food/taco.png';
 import icecream from '../assets/motifs/food/icecream.png';
 import salad from '../assets/motifs/food/salad.png';
 import macarons from '../assets/motifs/food/macarons.png';
-import food_back from '../assets/motifs/food/food_back.png';
 
 export const MOTIF_IMAGES: Record<string, string> = {
   git,
@@ -100,7 +96,6 @@ export const MOTIF_IMAGES: Record<string, string> = {
   sass,
   database,
   firebase,
-  code_back,
 
   squid_circle,
   squid_square,
@@ -120,7 +115,6 @@ export const MOTIF_IMAGES: Record<string, string> = {
   puzzle,
   ace_diamonds,
   play_button,
-  gaming_back,
 
   da_ramen,
   da_soup,
@@ -140,7 +134,6 @@ export const MOTIF_IMAGES: Record<string, string> = {
   da_user,
   da_wave,
   da_exchange,
-  da_back,
 
   fries,
   pizza,
@@ -160,7 +153,24 @@ export const MOTIF_IMAGES: Record<string, string> = {
   icecream,
   salad,
   macarons,
-  food_back,
+};
+
+/**
+ * Clean card-back motifs (monitor with code brackets) matching the preview screenshots.
+ */
+const monitorBack = (color: string): string =>
+  `<svg class="motif-svg" viewBox="0 0 64 64" aria-hidden="true">
+    <g fill="none" stroke="${color}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="10" y="11" width="44" height="32" rx="3.5"/>
+      <path d="M24 22.5l-7 8.5 7 8.5M40 22.5l7 8.5-7 8.5"/>
+      <path d="M28 50h8M22 54h20"/>
+    </g>
+  </svg>`;
+
+export const MOTIF_MARKUP: Record<string, string> = {
+  code_back: monitorBack('rgba(240,253,250,0.55)'),
+  da_back: monitorBack('rgba(210,235,245,0.55)'),
+  food_back: monitorBack('rgba(255,248,235,0.55)'),
 };
 
 /**
@@ -171,20 +181,14 @@ export function motifUrl(motif: string): string | undefined {
 }
 
 /**
- * Renders a motif as a full-bleed card face background style snippet.
- */
-export function motifFaceStyle(motif: string): string {
-  const src = MOTIF_IMAGES[motif];
-  if (!src) {
-    return '';
-  }
-  return `background-image:url('${src}')`;
-}
-
-/**
- * Renders a motif as an img (settings preview fallback).
+ * Renders a motif as SVG markup or the cropped design-sheet image.
  */
 export function renderMotif(motif: string): string {
+  const markup = MOTIF_MARKUP[motif];
+  if (markup) {
+    return markup;
+  }
+
   const src = MOTIF_IMAGES[motif];
   if (src) {
     return `<img class="motif-img" src="${src}" alt="" draggable="false" />`;

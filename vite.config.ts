@@ -9,11 +9,19 @@ function classicScriptPlugin(): Plugin {
   return {
     name: 'classic-script',
     enforce: 'post',
-    transformIndexHtml(html) {
-      return html
-        .replace(/\s*type="module"/g, '')
-        .replace(/\s*crossorigin(?:="[^"]*")?/g, '')
-        .replace(/<script(\s+src="[^"]+")>/g, '<script defer$1>');
+    transformIndexHtml: {
+      order: 'post',
+      handler(html, ctx) {
+        // Never strip modules during `vite` / HMR — only for production builds.
+        if (ctx.server) {
+          return html;
+        }
+
+        return html
+          .replace(/\s*type="module"/g, '')
+          .replace(/\s*crossorigin(?:="[^"]*")?/g, '')
+          .replace(/<script(\s+src="[^"]+")>/g, '<script defer$1>');
+      },
     },
   };
 }

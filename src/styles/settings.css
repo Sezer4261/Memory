@@ -73,12 +73,12 @@
 .settings-preview__stage {
   position: relative;
   min-width: 0;
-  width: 82%;
-  max-width: 82%;
+  width: 88%;
+  max-width: 88%;
   justify-self: end;
-  min-height: 200px;
+  min-height: 220px;
   height: auto;
-  max-height: min(42vh, 280px);
+  max-height: min(48vh, 320px);
   aspect-ratio: 16 / 11;
   border-radius: 16px;
   background: var(--preview-board, #243b4a);
@@ -314,12 +314,12 @@
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  gap: 0.35rem;
-  padding: 0.32rem 0.45rem;
+  gap: 0.45rem;
+  padding: 0.45rem 0.55rem;
   border-radius: 0;
   background: var(--preview-header, rgba(45, 40, 70, 0.55));
   color: var(--preview-text, #f8fafc);
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 600;
   min-width: 0;
   width: 100%;
@@ -339,7 +339,7 @@
 .preview-scoreboard {
   display: inline-flex;
   align-items: center;
-  gap: 0.28rem;
+  gap: 0.35rem;
   padding: 0;
   list-style: none;
 }
@@ -347,9 +347,9 @@
 .preview-score-item {
   display: inline-flex;
   align-items: center;
-  gap: 0.18rem;
-  padding: 0.12rem 0.35rem;
-  border-radius: 6px;
+  gap: 0.22rem;
+  padding: 0.18rem 0.42rem;
+  border-radius: 7px;
   background: #fff;
   color: #1b2430;
   font-size: 10px;
@@ -364,10 +364,12 @@
   display: block;
 }
 
+.preview-score-item--blue span:nth-child(2),
 .preview-score-item--blue span:last-child {
   color: #4fc3f7;
 }
 
+.preview-score-item--orange span:nth-child(2),
 .preview-score-item--orange span:last-child {
   color: #ff9800;
 }
@@ -376,7 +378,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.3rem;
+  gap: 0.35rem;
   min-width: 0;
   max-width: 100%;
   overflow: hidden;
@@ -393,8 +395,8 @@
 .preview-current__badge {
   display: inline-grid;
   place-items: center;
-  width: 1.05rem;
-  height: 1.05rem;
+  width: 1.1rem;
+  height: 1.1rem;
   border-radius: 4px;
   flex-shrink: 0;
 }
@@ -416,15 +418,17 @@
 .preview-exit {
   display: inline-flex;
   align-items: center;
-  gap: 0.25rem;
-  padding: 0.18rem 0.42rem;
-  border-radius: 6px;
+  gap: 0.28rem;
+  padding: 0.22rem 0.5rem;
+  border-radius: 7px;
   background: var(--preview-exit-bg, #2f2f2f);
   color: var(--preview-exit-fg, #f3f4f6);
   border: 1.5px solid var(--preview-accent, #14b8a6);
   font-size: 10px;
   font-weight: 600;
   white-space: nowrap;
+  font-family: inherit;
+  cursor: default;
   transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
@@ -440,47 +444,246 @@
   height: 100%;
   display: grid;
   place-items: center;
-  padding: 0.65rem 0.75rem 0.85rem;
+  padding: 0.65rem 0.85rem 0.9rem;
+}
+
+.preview-cards__pair {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+}
+
+.preview-cards__pair[hidden],
+.preview-cards__shot-wrap[hidden] {
+  display: none !important;
+}
+
+.preview-cards__shot-wrap {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.preview-cards__shot {
+  display: block;
+  width: auto;
+  height: min(78%, 230px);
+  max-width: 92%;
+  object-fit: contain;
+  object-position: center center;
+  pointer-events: none;
+  user-select: none;
+}
+
+.settings-preview__stage[data-preview-theme='gaming'] {
+  background: linear-gradient(160deg, #2a7a8c 0%, #1a2b3c 100%);
+  border-radius: 18px;
+}
+
+.settings-preview__stage[data-preview-theme='gaming'] .preview-game-header {
+  background: rgba(20, 30, 45, 0.72);
+  color: #f8fafc;
+  padding: 0.5rem 0.65rem;
+}
+
+.settings-preview__stage[data-preview-theme='gaming'] .preview-scoreboard {
+  gap: 0.55rem;
+}
+
+.settings-preview__stage[data-preview-theme='gaming'] .preview-score-item {
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  gap: 0.28rem;
+  font-size: 12px;
+  color: #f8fafc;
+}
+
+.settings-preview__stage[data-preview-theme='gaming'] .preview-score-item .pawn-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.settings-preview__stage[data-preview-theme='gaming'] .preview-score-item--orange span:last-child {
+  color: #ff9800;
+}
+
+.settings-preview__stage[data-preview-theme='gaming'] .preview-score-item--blue span:last-child {
+  color: #4fc3f7;
+}
+
+.settings-preview__stage[data-preview-theme='gaming'] .preview-exit {
+  background: transparent;
+  border-color: #ef4444;
+  color: #ef4444;
+  border-radius: 999px;
+  padding: 0.2rem 0.55rem 0.2rem 0.35rem;
+}
+
+.settings-preview__stage[data-preview-theme='gaming'] .preview-cards {
+  padding: 0.4rem 0.5rem 0.7rem;
+}
+
+.settings-preview__stage[data-preview-theme='gaming'] .preview-cards__shot {
+  height: min(82%, 250px);
+  max-width: 88%;
+  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.28));
 }
 
 .preview-card {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: clamp(100px, 34%, 148px);
-  aspect-ratio: 1 / 1;
+  width: clamp(88px, 30%, 124px);
+  aspect-ratio: var(--preview-card-aspect, 1 / 1);
   height: auto;
-  border-radius: 6px;
-  box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.22) inset,
-    0 10px 22px rgba(0, 0, 0, 0.32);
-  display: block;
+  border-radius: var(--preview-card-radius, 10px);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.32);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 0;
   overflow: hidden;
-  transition: background 0.25s ease;
+  transition: background 0.25s ease, border-radius 0.25s ease;
 }
 
-.preview-card.has-motif {
-  background-size: 100% 100%;
-  background-position: center center;
-  background-repeat: no-repeat;
+.preview-card__motif {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--preview-motif-size, 58%);
+  height: var(--preview-motif-size, 58%);
+  margin: 0;
+  padding: 0;
+  line-height: 0;
+  font-size: 0;
 }
 
-/* Theme back sits in front; motif card peeks out behind (like the mock). */
+.preview-card__motif .motif-img,
+.preview-card__motif .motif-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center center;
+}
+
+.preview-card__motif .motif-svg {
+  overflow: visible;
+}
+
+/* Front: CSS face fill + centered icon (~58%). */
+.preview-card--front .preview-card__motif {
+  width: var(--preview-motif-size, 58%);
+  height: var(--preview-motif-size, 58%);
+}
+
+.preview-card--front .preview-card__motif .motif-img {
+  object-fit: contain;
+}
+
+/* Default / code: back overlaps left; front peeks right with Git visible. */
 .preview-card--back {
   z-index: 2;
-  background-color: transparent;
-  background-image: var(--preview-back);
-  background-size: 100% 100%;
+  background: var(--preview-back);
   color: rgba(255, 255, 255, 0.92);
-  transform: translate(-62%, -46%) rotate(-9deg);
+  transform: translate(-70%, -52%) rotate(-9deg);
 }
 
 .preview-card--front {
   z-index: 1;
-  background-color: var(--preview-front, #fff);
+  background: var(--preview-front, #fff);
   color: #111827;
-  transform: translate(-34%, -54%) rotate(11deg);
+  transform: translate(-16%, -46%) rotate(11deg);
+}
+
+.preview-card--back .preview-card__motif {
+  width: 46%;
+  height: 46%;
+  opacity: 1;
+}
+
+.settings-preview__stage[data-preview-theme='gaming'] .preview-card {
+  width: auto;
+  height: clamp(70px, 46%, 96px);
+  aspect-ratio: 3 / 4;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.32);
+}
+
+.settings-preview__stage[data-preview-theme='gaming'] .preview-card--back {
+  transform: translate(-74%, -50%) rotate(-10deg);
+}
+
+.settings-preview__stage[data-preview-theme='gaming'] .preview-card--front {
+  transform: translate(-12%, -48%) rotate(10deg);
+}
+
+.settings-preview__stage[data-preview-theme='gaming'] .preview-card--back .preview-card__motif {
+  display: none;
+}
+
+/* Full card-face from screenshot (white + dice), fill edge-to-edge. */
+.settings-preview__stage[data-preview-theme='gaming'] .preview-card--front .preview-card__motif {
+  width: 100%;
+  height: 100%;
+}
+
+.settings-preview__stage[data-preview-theme='gaming'] .preview-card--front .preview-card__motif .motif-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+}
+
+.settings-preview__stage[data-preview-theme='gaming'] .preview-card--front {
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.28);
+  background: #f6f1f3;
+}
+
+/* DA: very round, flat, front peeks bottom-right. */
+.settings-preview__stage[data-preview-theme='da'] .preview-card {
+  width: clamp(88px, 30%, 120px);
+  box-shadow: 0 8px 18px rgba(30, 80, 110, 0.2);
+}
+
+.settings-preview__stage[data-preview-theme='da'] .preview-card--back {
+  z-index: 1;
+  transform: translate(-68%, -60%) rotate(0deg);
+}
+
+.settings-preview__stage[data-preview-theme='da'] .preview-card--front {
+  z-index: 2;
+  transform: translate(-26%, -38%) rotate(0deg);
+}
+
+.settings-preview__stage[data-preview-theme='da'] .preview-card--back .preview-card__motif {
+  width: 48%;
+  height: 48%;
+}
+
+/* Food: sharp squares, solid fill, wrap clearly visible. */
+.settings-preview__stage[data-preview-theme='food'] .preview-card {
+  width: clamp(86px, 30%, 118px);
+  box-shadow: 0 8px 18px rgba(80, 50, 20, 0.2);
+}
+
+.settings-preview__stage[data-preview-theme='food'] .preview-card--back {
+  z-index: 2;
+  transform: translate(-68%, -58%) rotate(0deg);
+}
+
+.settings-preview__stage[data-preview-theme='food'] .preview-card--front {
+  z-index: 1;
+  transform: translate(-24%, -40%) rotate(0deg);
+}
+
+.settings-preview__stage[data-preview-theme='food'] .preview-card--back .preview-card__motif {
+  width: 48%;
+  height: 48%;
 }
 
 .settings-action-bar {
