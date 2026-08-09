@@ -7,8 +7,6 @@ import {
 import { renderMotif } from '../data/motifs';
 import { GRID_LABELS, THEMES } from '../data/themes';
 import type { GameSettings, GridSize, PlayerColor, ThemeId } from '../types';
-import gamingCardsPreview from '../assets/preview/gaming-cards.png';
-
 export interface SettingsViewCallbacks {
   onBack: () => void;
   onPlay: (settings: GameSettings) => void;
@@ -144,14 +142,6 @@ export function renderSettingsView(
                 </button>
               </header>
               <section class="preview-cards" aria-hidden="true" data-preview-cards>
-                <div class="preview-cards__shot-wrap" data-preview-shot hidden>
-                  <img
-                    class="preview-cards__shot"
-                    src="${gamingCardsPreview}"
-                    alt=""
-                    draggable="false"
-                  />
-                </div>
                 <div class="preview-cards__pair" data-preview-pair>
                   <article class="preview-card preview-card--back">
                     <span class="preview-card__motif" data-preview-back-motif>${
@@ -294,9 +284,6 @@ export function renderSettingsView(
     const activeTheme = THEMES[themeId];
     const exitFilled = themeId !== 'code';
     const previewStage = root.querySelector<HTMLElement>('[data-preview-stage]');
-    const previewShot = root.querySelector<HTMLElement>('[data-preview-shot]');
-    const previewPair = root.querySelector<HTMLElement>('[data-preview-pair]');
-    const useShot = themeId === 'gaming';
 
     if (screen) {
       screen.style.setProperty('--preview-back', activeTheme.cardBackGradient);
@@ -318,11 +305,6 @@ export function renderSettingsView(
 
     if (previewStage) {
       previewStage.dataset.previewTheme = themeId;
-    }
-
-    if (previewShot && previewPair) {
-      previewShot.hidden = !useShot;
-      previewPair.hidden = useShot;
     }
 
     if (previewBackMotif) {

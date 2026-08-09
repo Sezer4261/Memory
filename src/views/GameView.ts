@@ -61,7 +61,6 @@ function mountGameView(
         --header-bg: ${theme.headerBackground};
         --card-back: ${theme.cardBackGradient};
         --card-front: ${theme.cardFront ?? '#ffffff'};
-        --motif-size: ${theme.motifSize ?? '58%'};
         --card-radius: ${theme.cardRadius ?? '10px'};
         --theme-accent: ${theme.accent};
         --board-text: ${theme.textOnBoard};
@@ -145,7 +144,6 @@ function syncGameView(
   screen.style.setProperty('--header-bg', theme.headerBackground);
   screen.style.setProperty('--card-back', theme.cardBackGradient);
   screen.style.setProperty('--card-front', theme.cardFront ?? '#ffffff');
-  screen.style.setProperty('--motif-size', theme.motifSize ?? '58%');
   screen.style.setProperty('--card-radius', theme.cardRadius ?? '10px');
   screen.style.setProperty('--theme-accent', theme.accent);
   screen.style.setProperty('--board-text', theme.textOnBoard);

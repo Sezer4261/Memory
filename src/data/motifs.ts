@@ -159,18 +159,19 @@ export const MOTIF_IMAGES: Record<string, string> = {
  * Clean card-back motifs (monitor with code brackets) matching the preview screenshots.
  */
 const monitorBack = (color: string): string =>
-  `<svg class="motif-svg" viewBox="0 0 64 64" aria-hidden="true">
-    <g fill="none" stroke="${color}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
-      <rect x="10" y="11" width="44" height="32" rx="3.5"/>
-      <path d="M24 22.5l-7 8.5 7 8.5M40 22.5l7 8.5-7 8.5"/>
-      <path d="M28 50h8M22 54h20"/>
+  `<svg class="motif-svg card-back-logo" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+    <g fill="none" stroke="${color}" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="12" y="18" width="76" height="54" rx="7"/>
+      <path d="M45 36L31 44.5 45 53M55 36l14 8.5L55 53"/>
+      <path d="M24 82h52"/>
     </g>
   </svg>`;
 
+/** Card-back motifs; card fronts use the exact design-sheet images. */
 export const MOTIF_MARKUP: Record<string, string> = {
-  code_back: monitorBack('rgba(240,253,250,0.55)'),
-  da_back: monitorBack('rgba(210,235,245,0.55)'),
-  food_back: monitorBack('rgba(255,248,235,0.55)'),
+  code_back: monitorBack('rgba(218,255,249,0.38)'),
+  da_back: monitorBack('rgba(208,240,250,0.34)'),
+  food_back: monitorBack('rgba(255,244,231,0.42)'),
 };
 
 /**
@@ -181,7 +182,7 @@ export function motifUrl(motif: string): string | undefined {
 }
 
 /**
- * Renders a motif as SVG markup or the cropped design-sheet image.
+ * Renders a motif as SVG markup or a high-res motif image.
  */
 export function renderMotif(motif: string): string {
   const markup = MOTIF_MARKUP[motif];
@@ -191,7 +192,7 @@ export function renderMotif(motif: string): string {
 
   const src = MOTIF_IMAGES[motif];
   if (src) {
-    return `<img class="motif-img" src="${src}" alt="" draggable="false" />`;
+    return `<img class="motif-img" src="${src}" alt="" width="1024" height="1024" decoding="async" draggable="false" />`;
   }
 
   return motif

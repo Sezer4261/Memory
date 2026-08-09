@@ -186,14 +186,78 @@
   }
 }
 
-/* Widescreen: centered fixed content width */
+/* Widescreen: centered reference-width settings composition. */
 @media (min-width: 941px) {
+  .screen--settings {
+    align-items: flex-start;
+    padding-top: clamp(1.25rem, 15.9vh, 10.75rem);
+  }
+
   .settings-modal {
-    width: min(100%, 960px);
+    width: min(100%, 1103px);
   }
 
   .screen--game {
     max-width: none;
+  }
+}
+
+/* Exact desktop composition from the Settings design. */
+@media (min-width: 1200px) {
+  .settings-modal {
+    width: 1103px;
+    height: 539px;
+    max-width: 1103px;
+    max-height: 539px;
+    grid-template-columns: 491px 546px;
+    grid-template-rows: 148px 391px;
+    column-gap: 66px;
+  }
+
+  .settings-modal__header {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .settings-options {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .settings-preview {
+    grid-column: 2;
+    grid-row: 1 / -1;
+    width: 546px;
+    height: 539px;
+    padding-top: 0;
+    grid-template-rows: 368px 80px;
+    gap: 47px;
+    align-content: end;
+    overflow: visible;
+  }
+
+  .settings-preview__stage {
+    width: 410px;
+    max-width: 410px;
+    min-height: 368px;
+    height: 368px;
+    max-height: 368px;
+    aspect-ratio: auto;
+  }
+
+  .settings-action-bar {
+    width: 546px;
+    min-height: 80px;
+    height: 80px;
+  }
+
+  .settings-modal__header .btn--text {
+    position: absolute;
+    top: 0.25rem;
+    right: auto;
+    left: calc(1103px - 7rem);
+    z-index: 3;
+    margin-top: 0;
   }
 }
 
