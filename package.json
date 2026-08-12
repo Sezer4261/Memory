@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build && node scripts/make-openable.mjs",
+    "check:docs": "node scripts/check-jsdoc.mjs",
+    "check:structure": "node scripts/check-structure.mjs",
     "preview": "vite preview",
     "start": "vite"
   },

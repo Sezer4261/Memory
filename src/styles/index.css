@@ -1,7 +1,8 @@
+/* Ordered stylesheet entry point; responsive overrides must remain last. */
 @import './base.css';
 @import './buttons.css';
 @import './home.css';
-@import './settings.css';
+@import './settings/index.css';
 @import './game.css';
 @import './modal.css';
 @import './game-over.css';

@@ -19,6 +19,24 @@ npm run dev
 
 Öffnet `http://localhost:5173/app.html`.
 
+## Codequalität
+
+Der Anwendungscode unter `src/` folgt zwei Strukturregeln:
+
+- Eine Funktion umfasst höchstens 14 physische Zeilen.
+- Eine handgeschriebene Datei umfasst höchstens 400 physische Zeilen.
+
+Die Regeln lassen sich nach der Installation der Abhängigkeiten automatisch prüfen:
+
+```bash
+npm run check:docs
+npm run check:structure
+npm run build
+```
+
+`check:docs` prüft Datei-JSDoc und öffentliche APIs. Zusätzliche Kommentare
+erklären Logik, deren Zweck nicht direkt aus Namen und Typen hervorgeht.
+
 ## Projektstruktur
 
 ```

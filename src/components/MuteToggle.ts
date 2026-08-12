@@ -1,5 +1,13 @@
+/**
+ * Mounts and synchronizes the persistent global sound toggle.
+ */
 import { soundEffects } from '../utils/sound';
 
+/**
+ * Renders the enabled-sound glyph.
+ *
+ * @returns Accessible-hidden SVG markup for the speaker icon.
+ */
 function speakerIcon(): string {
   return `
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -10,6 +18,11 @@ function speakerIcon(): string {
   `;
 }
 
+/**
+ * Renders the muted-sound glyph.
+ *
+ * @returns Accessible-hidden SVG markup for the muted speaker icon.
+ */
 function mutedIcon(): string {
   return `
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -19,6 +32,11 @@ function mutedIcon(): string {
   `;
 }
 
+/**
+ * Synchronizes button styling, labels, and icon with the mute service.
+ *
+ * @param button - Persistent mute button to update.
+ */
 function paintMuteButton(button: HTMLButtonElement): void {
   const muted = soundEffects.isMuted();
   button.classList.toggle('is-muted', muted);
@@ -29,25 +47,39 @@ function paintMuteButton(button: HTMLButtonElement): void {
 }
 
 /**
+ * Creates, appends, and wires the persistent mute button.
+ *
+ * @returns Newly mounted mute button.
+ */
+function createMuteButton(): HTMLButtonElement {
+  const button = document.createElement('button');
+  button.id = 'mute-toggle';
+  button.type = 'button';
+  button.className = 'mute-toggle';
+  document.body.appendChild(button);
+  button.addEventListener('click', () => {
+    soundEffects.toggleMuted();
+  });
+  return button;
+}
+
+/**
+ * Locates the existing mute button or creates it on first use.
+ *
+ * @returns Persistent mute button attached to the document body.
+ */
+function getMuteButton(): HTMLButtonElement {
+  return (
+    document.querySelector<HTMLButtonElement>('#mute-toggle') ??
+    createMuteButton()
+  );
+}
+
+/**
  * Fixed corner mute control – lives outside #app so view re-renders keep it.
  */
 export function mountMuteToggle(): void {
-  let button = document.querySelector<HTMLButtonElement>('#mute-toggle');
-
-  if (!button) {
-    button = document.createElement('button');
-    button.id = 'mute-toggle';
-    button.type = 'button';
-    button.className = 'mute-toggle';
-    document.body.appendChild(button);
-
-    button.addEventListener('click', () => {
-      soundEffects.toggleMuted();
-    });
-  }
-
+  const button = getMuteButton();
   paintMuteButton(button);
-  soundEffects.onMuteChange(() => {
-    paintMuteButton(button);
-  });
+  soundEffects.onMuteChange(() => paintMuteButton(button));
 }

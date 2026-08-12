@@ -4,6 +4,9 @@
   background: var(--end-bg, #1f2933);
   color: #f8fafc;
   position: relative;
+  height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
   animation: screen-fade-in 0.35s ease both;
   display: grid;
   place-items: center;
@@ -241,6 +244,28 @@
 .theme-da .result-icon--draw,
 .theme-da.screen--draw .result-title {
   color: #ff8a1f;
+}
+
+/* Keep every result action visible when browser zoom reduces viewport height. */
+@media (max-height: 500px) {
+  .screen--gameover {
+    padding-block: 0.35rem;
+  }
+
+  .gameover-panel,
+  .result-panel {
+    gap: 0.25rem;
+  }
+
+  .result-icon {
+    width: min(24dvh, 100px);
+    margin-block: 0.2rem;
+  }
+
+  .result-icon-card {
+    width: min(30dvh, 120px);
+    margin-block: 0.2rem;
+  }
 }
 
 .gameover-anim__item,

@@ -1,0 +1,5 @@
+/* Settings stylesheet barrel in cascade-sensitive order. */
+@import './settings-layout.css';
+@import './settings-preview-base.css';
+@import './settings-preview-themes.css';
+@import './settings-actions.css';

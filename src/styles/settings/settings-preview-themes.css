@@ -1,0 +1,231 @@
+/* Theme-specific preview colors, card geometry and motif placement. */
+.settings-preview__stage[data-preview-theme='code'] {
+  background: linear-gradient(180deg, #303332 0%, #303332 62%, #575757 100%);
+}
+
+.settings-preview__stage[data-preview-theme='code'] .preview-game-header {
+  background: transparent;
+}
+
+.settings-preview__stage[data-preview-theme='gaming'] {
+  background: linear-gradient(145deg, #2f829b 0%, #116884 100%);
+  border-radius: 18px;
+}
+
+.settings-preview__stage[data-preview-theme='gaming'] .preview-game-header {
+  background: rgba(98, 95, 125, 0.88);
+  color: #f8fafc;
+  padding: 0.65rem 0.9rem;
+}
+
+.settings-preview__stage[data-preview-theme='gaming'] .preview-scoreboard {
+  gap: 0.55rem;
+}
+
+.settings-preview__stage[data-preview-theme='gaming'] .preview-score-item {
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  gap: 0.28rem;
+  font-size: 12px;
+  color: #f8fafc;
+}
+
+.settings-preview__stage[data-preview-theme='gaming'] .preview-score-item .pawn-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.settings-preview__stage[data-preview-theme='gaming'] .preview-score-item--orange span:last-child {
+  color: #ff9800;
+}
+
+.settings-preview__stage[data-preview-theme='gaming'] .preview-score-item--blue span:last-child {
+  color: #4fc3f7;
+}
+
+.settings-preview__stage[data-preview-theme='gaming'] .preview-exit {
+  background: transparent;
+  border-color: #ef4444;
+  color: #ef4444;
+  border-radius: 999px;
+  padding: 0.2rem 0.55rem 0.2rem 0.35rem;
+}
+
+.settings-preview__stage[data-preview-theme='gaming'] .preview-cards {
+  padding: 0;
+}
+
+.settings-preview__stage[data-preview-theme='gaming'] .preview-cards__shot {
+  height: min(82%, 250px);
+  max-width: 88%;
+  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.28));
+}
+
+.preview-card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 43%;
+  aspect-ratio: var(--preview-card-aspect, 1 / 1);
+  height: auto;
+  border-radius: var(--preview-card-radius, 10px);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.28);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  overflow: hidden;
+  transition: background 0.25s ease, border-radius 0.25s ease;
+}
+
+.preview-card__motif {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--preview-motif-size, 62%);
+  height: var(--preview-motif-size, 62%);
+  margin: 0;
+  padding: 0;
+  line-height: 0;
+  font-size: 0;
+}
+
+.preview-card__motif .motif-img,
+.preview-card__motif .motif-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center center;
+  image-rendering: auto;
+}
+
+.preview-card__motif .motif-svg {
+  overflow: visible;
+}
+
+.preview-card--back .preview-card__motif {
+  width: 68%;
+  height: 68%;
+}
+
+/* Front: CSS face fill + centered icon (~58%). */
+.preview-card--front .preview-card__motif {
+  width: var(--preview-motif-size, 58%);
+  height: var(--preview-motif-size, 58%);
+}
+
+.preview-card--front .preview-card__motif .motif-img {
+  object-fit: contain;
+}
+
+/* Default / code: back overlaps left; front peeks right with Git visible. */
+.preview-card--back {
+  z-index: 2;
+  background: var(--preview-back);
+  color: rgba(255, 255, 255, 0.92);
+  transform: translate(-85%, -59%) rotate(-6deg);
+}
+
+.preview-card--front {
+  z-index: 1;
+  background: var(--preview-front, #fff);
+  color: #111827;
+  transform: translate(-20%, -44%) rotate(10deg);
+}
+
+.preview-card--back .preview-card__motif {
+  width: 68%;
+  height: 68%;
+  opacity: 1;
+}
+
+.settings-preview__stage[data-preview-theme='gaming'] .preview-card {
+  width: 40%;
+  aspect-ratio: 3 / 4;
+  border-radius: 18px;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+}
+
+.settings-preview__stage[data-preview-theme='gaming'] .preview-card--back {
+  z-index: 2;
+  transform: translate(-92%, -54%) rotate(-7deg);
+}
+
+.settings-preview__stage[data-preview-theme='gaming'] .preview-card--front {
+  z-index: 1;
+  transform: translate(-5%, -45%) rotate(6deg);
+  background: #f3f4f6;
+}
+
+.settings-preview__stage[data-preview-theme='gaming'] .preview-card--back .preview-card__motif {
+  display: none;
+}
+
+.settings-preview__stage[data-preview-theme='gaming'] .preview-card--front .preview-card__motif {
+  width: 58%;
+  height: 58%;
+}
+
+.settings-preview__stage[data-preview-theme='gaming'] .preview-card--front .preview-card__motif .motif-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.settings-preview__stage[data-preview-theme='gaming'] .preview-card--front .motif-img {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  object-position: 50% 50%;
+  transform: none;
+  filter: none;
+  clip-path: none;
+  image-rendering: auto;
+}
+
+/* DA: very round, flat, front peeks bottom-right. */
+.settings-preview__stage[data-preview-theme='da'] .preview-card {
+  width: 39%;
+  box-shadow: 0 10px 20px rgba(30, 80, 110, 0.2);
+}
+
+.settings-preview__stage[data-preview-theme='da'] .preview-card--back {
+  z-index: 2;
+  transform: translate(-92%, -70%) rotate(0deg);
+}
+
+.settings-preview__stage[data-preview-theme='da'] .preview-card--front {
+  z-index: 1;
+  transform: translate(-3%, -31%) rotate(0deg);
+}
+
+.settings-preview__stage[data-preview-theme='da'] .preview-card--back .preview-card__motif {
+  width: 68%;
+  height: 68%;
+}
+
+/* Food: sharp squares, solid fill, wrap clearly visible. */
+.settings-preview__stage[data-preview-theme='food'] .preview-card {
+  width: 37%;
+  box-shadow: 0 10px 20px rgba(80, 50, 20, 0.2);
+}
+
+.settings-preview__stage[data-preview-theme='food'] .preview-card--back {
+  z-index: 2;
+  transform: translate(-88%, -75%) rotate(0deg);
+}
+
+.settings-preview__stage[data-preview-theme='food'] .preview-card--front {
+  z-index: 1;
+  transform: translate(-10%, -25%) rotate(0deg);
+}
+
+.settings-preview__stage[data-preview-theme='food'] .preview-card--back .preview-card__motif {
+  width: 68%;
+  height: 68%;
+}
+

@@ -1,3 +1,6 @@
+/**
+ * Boots the Memory application and mounts its persistent global controls.
+ */
 import { App } from './app/App';
 import { mountMuteToggle } from './components/MuteToggle';
 import './styles/index.css';

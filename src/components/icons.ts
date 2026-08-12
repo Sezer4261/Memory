@@ -1,6 +1,15 @@
+/**
+ * Generates reusable inline SVG and decorative markup for application views.
+ */
 import type { PlayerColor } from '../types';
 
-/** Player pawn icon used in scoreboard and turn indicator. */
+/**
+ * Renders a player pawn for scoreboards and turn indicators.
+ *
+ * @param color - Player color, or white for neutral display.
+ * @param size - Rendered width and height in pixels.
+ * @returns Inline SVG markup for the pawn.
+ */
 export function pawnIcon(color: PlayerColor | 'white', size = 28): string {
   const fill =
     color === 'white' ? '#ffffff' : color === 'orange' ? '#ff9800' : '#4fc3f7';
@@ -13,19 +22,40 @@ export function pawnIcon(color: PlayerColor | 'white', size = 28): string {
   `;
 }
 
-/** Large winner pawn for the game-over screen. */
+/**
+ * Renders a large pawn for the game-over screen.
+ *
+ * @param color - Winning player's color.
+ * @param outlined - Whether to render an outline instead of a filled pawn.
+ * @returns Inline SVG markup for the selected pawn style.
+ */
 export function largePawnIcon(color: PlayerColor, outlined = false): string {
   const fill = color === 'orange' ? '#ff9800' : '#4fc3f7';
+  return outlined ? outlinedPawnIcon(fill) : filledPawnIcon(fill);
+}
 
-  if (outlined) {
-    return `
+/**
+ * Renders the outlined large-pawn variant.
+ *
+ * @param fill - CSS color applied to the pawn stroke.
+ * @returns Inline SVG markup for an outlined pawn.
+ */
+function outlinedPawnIcon(fill: string): string {
+  return `
       <svg class="winner-pawn winner-pawn--outline" viewBox="0 0 120 160" aria-hidden="true" fill="none">
         <circle cx="60" cy="36" r="26" stroke="${fill}" stroke-width="8"/>
         <path d="M28 146c5-36 20-56 32-56s27 20 32 56" stroke="${fill}" stroke-width="8" stroke-linecap="round"/>
       </svg>
     `;
-  }
+}
 
+/**
+ * Renders the filled large-pawn variant.
+ *
+ * @param fill - CSS color applied to the pawn body.
+ * @returns Inline SVG markup for a filled pawn.
+ */
+function filledPawnIcon(fill: string): string {
   return `
     <svg class="winner-pawn" viewBox="0 0 120 160" aria-hidden="true">
       <circle cx="60" cy="36" r="28" fill="${fill}"/>
@@ -34,7 +64,11 @@ export function largePawnIcon(color: PlayerColor, outlined = false): string {
   `;
 }
 
-/** Golden trophy for the gaming winner screen. */
+/**
+ * Renders the golden trophy shown for a winning game.
+ *
+ * @returns Inline SVG markup for the trophy.
+ */
 export function trophyIcon(): string {
   return `
     <svg class="winner-trophy" viewBox="0 0 120 140" aria-hidden="true">
@@ -48,10 +82,18 @@ export function trophyIcon(): string {
   `;
 }
 
-/** Decorative game-controller icon (legacy / preview). */
+/**
+ * Renders the decorative controller used by legacy previews.
+ *
+ * @param className - CSS class assigned to the root SVG element.
+ * @returns Inline SVG markup for the controller.
+ */
 export function controllerIcon(className = 'controller-icon'): string {
-  return `
-    <svg class="${className}" viewBox="0 0 120 80" aria-hidden="true">
+  return CONTROLLER_ICON.split('__CLASS__').join(className);
+}
+
+const CONTROLLER_ICON = `
+    <svg class="__CLASS__" viewBox="0 0 120 80" aria-hidden="true">
       <defs>
         <linearGradient id="controllerGlow" x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" stop-color="#e91e8c"/>
@@ -71,9 +113,12 @@ export function controllerIcon(className = 'controller-icon'): string {
       <rect class="controller-dpad" x="24" y="38" width="24" height="8" rx="2" fill="#243b4a"/>
     </svg>
   `;
-}
 
-/** Large Stadia controller watermark (Material Symbol: stadia_controller outlined). */
+/**
+ * Renders the large outlined controller watermark.
+ *
+ * @returns Inline SVG markup for the home-screen watermark.
+ */
 export function watermarkControllerIcon(): string {
   return `
     <svg class="home-watermark__svg" viewBox="0 -960 960 960" aria-hidden="true">
@@ -85,7 +130,11 @@ export function watermarkControllerIcon(): string {
   `;
 }
 
-/** Small Stadia controller for the Play button (Material outline, matches screenshot). */
+/**
+ * Renders the small outlined controller used by the Play button.
+ *
+ * @returns Inline SVG markup for the button icon.
+ */
 export function controllerLineIcon(): string {
   return `
     <svg width="28" height="20" viewBox="0 -960 960 960" aria-hidden="true">
@@ -97,7 +146,11 @@ export function controllerLineIcon(): string {
   `;
 }
 
-/** Right arrow for the Play button. */
+/**
+ * Renders the right-pointing Play-button arrow.
+ *
+ * @returns Inline SVG markup for the arrow.
+ */
 export function arrowRightIcon(): string {
   return `
     <svg width="18" height="14" viewBox="0 0 18 14" fill="none" aria-hidden="true">
@@ -106,7 +159,11 @@ export function arrowRightIcon(): string {
   `;
 }
 
-/** Small play triangle for Start buttons elsewhere. */
+/**
+ * Renders the compact play triangle used by Start buttons.
+ *
+ * @returns Inline SVG markup for the play symbol.
+ */
 export function playIcon(): string {
   return `
     <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
@@ -115,7 +172,11 @@ export function playIcon(): string {
   `;
 }
 
-/** Exit / leave icon for the game header button. */
+/**
+ * Renders the leave symbol used by the game header.
+ *
+ * @returns Inline SVG markup for the exit icon.
+ */
 export function exitIcon(): string {
   return `
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -125,7 +186,12 @@ export function exitIcon(): string {
   `;
 }
 
-/** Balance scales for draw results. */
+/**
+ * Renders balance scales used to represent a draw.
+ *
+ * @param outlined - Whether the scale pans use outlines instead of fills.
+ * @returns Inline SVG markup for the requested scales style.
+ */
 export function scalesIcon(outlined = false): string {
   const stroke = outlined ? 'currentColor' : 'none';
   const fill = outlined ? 'none' : 'currentColor';
@@ -140,36 +206,43 @@ export function scalesIcon(outlined = false): string {
   `;
 }
 
-/** Small section icons for the settings modal. */
+/**
+ * Selects an icon for a settings section.
+ *
+ * @param kind - Settings section represented by the icon.
+ * @returns Inline SVG markup for the selected section.
+ */
 export function settingsSectionIcon(kind: 'player' | 'board' | 'theme'): string {
-  if (kind === 'player') {
-    return `
+  return SETTINGS_SECTION_ICONS[kind];
+}
+
+const SETTINGS_SECTION_ICONS = {
+  player: `
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <circle cx="12" cy="8" r="3.25" stroke="#14b8a6" stroke-width="2"/>
         <path d="M5.5 19.5c1.2-3.4 3.6-5 6.5-5s5.3 1.6 6.5 5" stroke="#14b8a6" stroke-width="2" stroke-linecap="round"/>
       </svg>
-    `;
-  }
-
-  if (kind === 'board') {
-    return `
+    `,
+  board: `
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <rect x="3.5" y="3.5" width="17" height="17" rx="2.5" stroke="#3b82f6" stroke-width="2"/>
         <path d="M12 4v16M4 12h16" stroke="#3b82f6" stroke-width="2"/>
       </svg>
-    `;
-  }
-
-  return `
+    `,
+  theme: `
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <circle cx="12" cy="12" r="8.25" stroke="#ec4899" stroke-width="2"/>
       <circle cx="12" cy="12" r="3" stroke="#ec4899" stroke-width="2"/>
       <path d="M12 3.75v2.5M12 17.75v2.5M3.75 12h2.5M17.75 12h2.5" stroke="#ec4899" stroke-width="2" stroke-linecap="round"/>
     </svg>
-  `;
-}
+  `,
+};
 
-/** Confetti strip decoration for winner / home screens. */
+/**
+ * Renders a deterministic strip of colored confetti pieces.
+ *
+ * @returns Decorative HTML markup for winner and home screens.
+ */
 export function confettiStrip(): string {
   const pieces = Array.from({ length: 28 }, (_, index) => {
     const colors = ['#ef4444', '#fbbf24', '#22d3ee', '#3b82f6', '#a3e635', '#f472b6'];

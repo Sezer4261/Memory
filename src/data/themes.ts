@@ -1,20 +1,24 @@
+/**
+ * Defines the supported board sizes, visual themes, and initial game settings.
+ */
+
 import type { GridConfig, GridSize, ThemeDefinition, ThemeId } from '../types';
 
+/** Grid dimensions and required pair counts keyed by selectable grid size. */
 export const GRID_CONFIGS: Record<GridSize, GridConfig> = {
   '4x4': { columns: 4, rows: 4, pairCount: 8 },
   '4x6': { columns: 6, rows: 4, pairCount: 12 },
   '6x6': { columns: 6, rows: 6, pairCount: 18 },
 };
 
+/** Human-readable card-count labels keyed by selectable grid size. */
 export const GRID_LABELS: Record<GridSize, string> = {
   '4x4': '16 cards',
   '4x6': '24 cards',
   '6x6': '36 cards',
 };
 
-/**
- * Four layouts / themes – colors & card chrome match the preview screenshots.
- */
+/** Complete visual and motif configuration for each selectable theme. */
 export const THEMES: Record<ThemeId, ThemeDefinition> = {
   code: {
     id: 'code',
@@ -169,6 +173,7 @@ export const THEMES: Record<ThemeId, ThemeDefinition> = {
   },
 };
 
+/** Settings applied before the player makes any custom selections. */
 export const DEFAULT_SETTINGS = {
   playerColor: 'blue' as const,
   gridSize: '4x4' as const,

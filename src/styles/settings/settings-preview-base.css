@@ -1,0 +1,183 @@
+/* Shared scoreboard and card-preview primitives for every theme. */
+.preview-game-header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0;
+  background: var(--preview-header, rgba(45, 40, 70, 0.55));
+  color: var(--preview-text, #f8fafc);
+  font-size: 12px;
+  font-weight: 600;
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  border: none;
+  box-shadow: none;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+.settings-preview__stage[data-preview-theme='da'] .preview-game-header,
+.settings-preview__stage[data-preview-theme='food'] .preview-game-header,
+.settings-preview__stage[data-preview-theme='gaming'] .preview-game-header {
+  width: auto;
+  margin: 0.9rem;
+  border-radius: 11px;
+  box-shadow: 0 3px 9px rgba(15, 23, 42, 0.16);
+}
+
+.settings-preview__stage[data-preview-theme='da'] .preview-game-header,
+.settings-preview__stage[data-preview-theme='food'] .preview-game-header {
+  background: #ffffff;
+}
+
+.preview-scoreboard,
+.preview-current,
+.preview-exit {
+  margin: 0;
+}
+
+.preview-scoreboard {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0;
+  list-style: none;
+}
+
+.preview-score-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.22rem;
+  padding: 0.18rem 0.42rem;
+  border-radius: 7px;
+  background: #fff;
+  color: #1b2430;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.12);
+}
+
+.preview-score-item .pawn-icon {
+  width: 12px;
+  height: 12px;
+  display: block;
+}
+
+.preview-score-item--blue span:nth-child(2),
+.preview-score-item--blue span:last-child {
+  color: #4fc3f7;
+}
+
+.preview-score-item--orange span:nth-child(2),
+.preview-score-item--orange span:last-child {
+  color: #ff9800;
+}
+
+.preview-current {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: inherit;
+}
+
+.preview-current > span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.preview-current__badge {
+  display: inline-grid;
+  place-items: center;
+  width: 1.1rem;
+  height: 1.1rem;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.preview-current__badge--blue {
+  background: #4fc3f7;
+}
+
+.preview-current__badge--orange {
+  background: #ff9800;
+}
+
+.preview-current__badge .pawn-icon {
+  width: 10px;
+  height: 10px;
+  display: block;
+}
+
+.preview-exit {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.28rem;
+  padding: 0.22rem 0.5rem;
+  border-radius: 7px;
+  background: var(--preview-exit-bg, #2f2f2f);
+  color: var(--preview-exit-fg, #f3f4f6);
+  border: 1.5px solid var(--preview-accent, #14b8a6);
+  font-size: 10px;
+  font-weight: 600;
+  white-space: nowrap;
+  font-family: inherit;
+  cursor: default;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.preview-exit svg {
+  width: 11px;
+  height: 11px;
+  stroke: currentColor;
+}
+
+.preview-cards {
+  position: relative;
+  min-height: 0;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  padding: 0;
+}
+
+.preview-cards__pair {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+}
+
+.preview-cards__pair[hidden],
+.preview-cards__shot-wrap[hidden] {
+  display: none !important;
+}
+
+.preview-cards__shot-wrap {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.preview-cards__shot {
+  display: block;
+  width: auto;
+  height: min(78%, 230px);
+  max-width: 92%;
+  object-fit: contain;
+  object-position: center center;
+  pointer-events: none;
+  user-select: none;
+}
+

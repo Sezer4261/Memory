@@ -1,4 +1,6 @@
-import { GRID_CONFIGS, THEMES } from '../data/themes';
+/**
+ * Implements Memory card rules, turn resolution, scoring, and state updates.
+ */
 import type {
   CardData,
   GameSettings,
@@ -6,14 +8,29 @@ import type {
   PlayerColor,
   PlayerState,
 } from '../types';
-import { shuffle } from '../utils/shuffle';
 import { soundEffects } from '../utils/sound';
+import { createBoard } from './board';
 
 const MATCH_DELAY_MS = 380;
 const MISMATCH_DELAY_MS = 520;
 
 /**
- * Core Memory game engine: board creation, flips, scoring and turn order.
+ * Creates the two score entries with distinct player colors.
+ *
+ * @param settings - Game settings containing the first player's color.
+ * @returns Player states in fixed turn-order positions.
+ */
+function createPlayers(settings: GameSettings): [PlayerState, PlayerState] {
+  const secondColor: PlayerColor =
+    settings.playerColor === 'orange' ? 'blue' : 'orange';
+  return [
+    { color: settings.playerColor, score: 0 },
+    { color: secondColor, score: 0 },
+  ];
+}
+
+/**
+ * Runs the Memory game independently from rendering and navigation.
  */
 export class MemoryGame {
   private readonly settings: GameSettings;
@@ -29,33 +46,38 @@ export class MemoryGame {
   private isFinished = false;
   private onChange: ((snapshot: GameSnapshot) => void) | null = null;
 
+  /**
+   * Creates a new shuffled game using the supplied settings.
+   *
+   * @param settings - Board, theme, and player configuration for the game.
+   */
   constructor(settings: GameSettings) {
     this.settings = settings;
-    const secondColor: PlayerColor =
-      settings.playerColor === 'orange' ? 'blue' : 'orange';
-
-    this.players = [
-      { color: settings.playerColor, score: 0 },
-      { color: secondColor, score: 0 },
-    ];
-
-    this.createBoard();
+    this.players = createPlayers(settings);
+    this.resetBoard();
   }
 
+  /**
+   * Registers the state listener and immediately emits the current state.
+   *
+   * @param listener - Consumer notified after observable state changes.
+   */
   public setChangeListener(listener: (snapshot: GameSnapshot) => void): void {
     this.onChange = listener;
     this.emit();
   }
 
+  /**
+   * Creates a defensive snapshot of the current game state.
+   *
+   * @returns Cloned cards, players, board metadata, and turn status.
+   */
   public getSnapshot(): GameSnapshot {
     return {
       cards: this.cards.map((card) => ({ ...card })),
       columns: this.columns,
       rows: this.rows,
-      players: [
-        { ...this.players[0] },
-        { ...this.players[1] },
-      ],
+      players: [{ ...this.players[0] }, { ...this.players[1] }],
       currentPlayerIndex: this.currentPlayerIndex,
       matchedPairs: this.matchedPairs,
       totalPairs: this.totalPairs,
@@ -64,119 +86,166 @@ export class MemoryGame {
     };
   }
 
+  /**
+   * Flips an eligible card and resolves the turn after the second flip.
+   *
+   * @param cardId - Unique identifier of the card selected by the player.
+   */
   public flipCard(cardId: number): void {
-    if (this.isLocked || this.isFinished) {
-      return;
-    }
-
+    if (this.isLocked || this.isFinished) return;
     const card = this.cards.find((entry) => entry.id === cardId);
-
-    if (!card || card.isFlipped || card.isMatched) {
+    if (!card || !this.canFlip(card)) {
       return;
     }
-
-    if (this.flippedIds.length >= 2) {
-      return;
-    }
-
     card.isFlipped = true;
     this.flippedIds.push(card.id);
     this.emit();
-
     if (this.flippedIds.length === 2) {
-      this.isLocked = true;
-      this.emit();
-      void this.resolveTurn();
+      this.beginTurnResolution();
     }
   }
 
-  private createBoard(): void {
-    const grid = GRID_CONFIGS[this.settings.gridSize];
-    const theme = THEMES[this.settings.themeId];
-    const motifs = theme.motifs.slice(0, grid.pairCount);
+  /**
+   * Determines whether a card can join the current selection.
+   *
+   * @param card - Candidate card from the active board.
+   * @returns Whether the card is face-down, unmatched, and selectable.
+   */
+  private canFlip(card: CardData): boolean {
+    return !card.isFlipped && !card.isMatched && this.flippedIds.length < 2;
+  }
 
-    this.columns = grid.columns;
-    this.rows = grid.rows;
-    this.totalPairs = grid.pairCount;
+  /** Locks input and starts asynchronous resolution of the selected pair. */
+  private beginTurnResolution(): void {
+    this.isLocked = true;
+    this.emit();
+    void this.resolveTurn();
+  }
+
+  /** Replaces board-dependent state with a fresh shuffled setup. */
+  private resetBoard(): void {
+    const board = createBoard(this.settings);
+    this.cards = board.cards;
+    this.columns = board.columns;
+    this.rows = board.rows;
+    this.totalPairs = board.totalPairs;
     this.matchedPairs = 0;
     this.flippedIds = [];
     this.isLocked = false;
     this.isFinished = false;
-
-    const pairCards: CardData[] = [];
-    let nextId = 0;
-
-    motifs.forEach((motif, pairId) => {
-      pairCards.push(
-        {
-          id: nextId,
-          pairId,
-          motif,
-          isFlipped: false,
-          isMatched: false,
-        },
-        {
-          id: nextId + 1,
-          pairId,
-          motif,
-          isFlipped: false,
-          isMatched: false,
-        },
-      );
-      nextId += 2;
-    });
-
-    this.cards = shuffle(pairCards);
   }
 
+  /** Resolves the selected pair after its result has remained visible. */
   private async resolveTurn(): Promise<void> {
+    const pair = this.getFlippedPair();
+    if (!pair) {
+      this.recoverInvalidTurn();
+      return;
+    }
+    const [firstCard, secondCard] = pair;
+    const isMatch = firstCard.pairId === secondCard.pairId;
+    this.playResultSound(isMatch);
+    // Keep both cards visible long enough for the result to register.
+    await this.wait(isMatch ? MATCH_DELAY_MS : MISMATCH_DELAY_MS);
+    this.applyResult(firstCard, secondCard, isMatch);
+    this.finishResolution();
+  }
+
+  /**
+   * Resolves selected card identifiers to their board entries.
+   *
+   * @returns The selected pair, or `null` if either card is unavailable.
+   */
+  private getFlippedPair(): [CardData, CardData] | null {
     const [firstId, secondId] = this.flippedIds;
     const firstCard = this.cards.find((card) => card.id === firstId);
     const secondCard = this.cards.find((card) => card.id === secondId);
+    return firstCard && secondCard ? [firstCard, secondCard] : null;
+  }
 
-    if (!firstCard || !secondCard) {
-      this.isLocked = false;
-      this.flippedIds = [];
-      this.emit();
-      return;
-    }
-
-    const isMatch = firstCard.pairId === secondCard.pairId;
-
+  /**
+   * Plays the feedback sound associated with a turn result.
+   *
+   * @param isMatch - Whether the selected cards form a pair.
+   */
+  private playResultSound(isMatch: boolean): void {
     if (isMatch) {
       soundEffects.playMatch();
-    } else {
-      soundEffects.playMismatch();
+      return;
     }
+    soundEffects.playMismatch();
+  }
 
-    await this.wait(isMatch ? MATCH_DELAY_MS : MISMATCH_DELAY_MS);
-
+  /**
+   * Applies either matching or mismatching state transitions.
+   *
+   * @param firstCard - First selected card.
+   * @param secondCard - Second selected card.
+   * @param isMatch - Whether both cards share a pair identifier.
+   */
+  private applyResult(
+    firstCard: CardData,
+    secondCard: CardData,
+    isMatch: boolean,
+  ): void {
     if (isMatch) {
-      firstCard.isMatched = true;
-      secondCard.isMatched = true;
-      this.players[this.currentPlayerIndex].score += 1;
-      this.matchedPairs += 1;
-
-      if (this.matchedPairs >= this.totalPairs) {
-        this.isFinished = true;
-      }
-    } else {
-      firstCard.isFlipped = false;
-      secondCard.isFlipped = false;
-      this.currentPlayerIndex = this.currentPlayerIndex === 0 ? 1 : 0;
+      this.applyMatch(firstCard, secondCard);
+      return;
     }
+    this.applyMismatch(firstCard, secondCard);
+  }
 
+  /**
+   * Marks a pair complete and awards it to the current player.
+   *
+   * @param firstCard - First card in the matched pair.
+   * @param secondCard - Second card in the matched pair.
+   */
+  private applyMatch(firstCard: CardData, secondCard: CardData): void {
+    firstCard.isMatched = true;
+    secondCard.isMatched = true;
+    this.players[this.currentPlayerIndex].score += 1;
+    this.matchedPairs += 1;
+    this.isFinished = this.matchedPairs >= this.totalPairs;
+  }
+
+  /**
+   * Hides a mismatched pair and passes control to the other player.
+   *
+   * @param firstCard - First card in the mismatched selection.
+   * @param secondCard - Second card in the mismatched selection.
+   */
+  private applyMismatch(firstCard: CardData, secondCard: CardData): void {
+    firstCard.isFlipped = false;
+    secondCard.isFlipped = false;
+    this.currentPlayerIndex = this.currentPlayerIndex === 0 ? 1 : 0;
+  }
+
+  /** Unlocks the game if selected cards can no longer be resolved. */
+  private recoverInvalidTurn(): void {
+    this.isLocked = false;
+    this.flippedIds = [];
+    this.emit();
+  }
+
+  /** Clears the selection, unlocks input, and publishes resolved state. */
+  private finishResolution(): void {
     this.flippedIds = [];
     this.isLocked = false;
     this.emit();
   }
 
+  /**
+   * Delays turn mutation so both selected cards remain visible.
+   *
+   * @param durationMs - Delay duration in milliseconds.
+   * @returns Promise fulfilled after the browser timer expires.
+   */
   private wait(durationMs: number): Promise<void> {
-    return new Promise((resolve) => {
-      window.setTimeout(resolve, durationMs);
-    });
+    return new Promise((resolve) => window.setTimeout(resolve, durationMs));
   }
 
+  /** Publishes a defensive snapshot to the registered listener. */
   private emit(): void {
     this.onChange?.(this.getSnapshot());
   }
