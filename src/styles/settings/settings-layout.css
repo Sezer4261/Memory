@@ -35,7 +35,8 @@
   box-shadow: none;
   padding: 0;
   align-content: start;
-  overflow: hidden;
+  /* Keep intentionally offset section icons and title decoration visible. */
+  overflow: visible;
 }
 
 .settings-modal__header {

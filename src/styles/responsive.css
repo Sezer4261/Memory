@@ -4,7 +4,7 @@
 @media (max-width: 940px) {
   .settings-modal {
     grid-template-columns: 1fr;
-    overflow: hidden;
+    overflow: visible;
   }
 
   .settings-preview {
@@ -74,11 +74,23 @@
 
   .settings-modal {
     max-height: 100%;
-    overflow: hidden;
+    overflow: visible;
   }
 
   .settings-modal__header {
     flex-wrap: wrap;
+  }
+
+  .settings-options {
+    margin-left: 0;
+  }
+
+  .settings-title::before {
+    left: 0;
+  }
+
+  .settings-title::after {
+    left: 0.35rem;
   }
 
   .game-header {
