@@ -1,3 +1,33 @@
+Memory – Matching Game
+
+About the Project
+
+Memory is a browser-based matching game inspired by the classic memory card game.
+
+Players turn over cards, remember their positions, and try to find matching pairs.
+
+Key Features
+
+Interactive card selection
+
+Matching pair detection
+
+Game state management
+
+Player interaction and feedback
+
+Responsive interface
+
+Technologies
+
+Add the technologies used in this project.
+
+Purpose
+
+To practice JavaScript logic, event handling, state management, and interactive user interface development.
+
+
+
 # Memory
 
 Zweispieler-Memory-Spiel mit TypeScript, Themes und animierten Karten.
